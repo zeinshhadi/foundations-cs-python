@@ -11,6 +11,42 @@ def check_integer_input(number): # O(N)
         except ValueError:
             print("Invalid input. Please enter an integer.")
 
+##### - Merge Sort - ############
+
+def merge_sort(arr,option):
+    if len(arr) <= 1:
+        return arr
+
+    mid = len(arr) // 2
+    left_half = arr[:mid]
+    right_half = arr[mid:]
+
+    left_half = merge_sort(left_half)
+    right_half = merge_sort(right_half)
+
+    return merge(left_half, right_half,option)
+
+def merge(left, right,option):
+    merged_list = []
+    left_idx, right_idx = 0, 0
+
+    while left_idx < len(left) and right_idx < len(right):
+        left_date = int(left[left_idx][option])
+        right_date = int(right[right_idx][option])
+
+        if left_date <= right_date:
+            merged_list.append(left[left_idx])
+            left_idx += 1
+        else:
+            merged_list.append(right[right_idx])
+            right_idx += 1
+
+    merged_list.extend(left[left_idx:])
+    merged_list.extend(right[right_idx:])
+    
+    return merged_list
+            
+
 ######## - Display Menus According to user start- #######################
 def displayAdminMenu():
   
@@ -68,11 +104,6 @@ def GetLastId(removed,tickets):
         last_ticket_id =tickets[last_index]['ticket_id']
         last_ticket_id = int(last_ticket_id[4:])
         return last_ticket_id
-    
-
-
-
-
 
 def HighestTicketsNum(events):
 
@@ -93,7 +124,7 @@ def createTicket(removed,last_id):
     else: 
         current_id_num =last_id + 1
         ticket_id = str('tick')+ str(current_id_num)
-        event_id='ev008'
+        event_id=input('Enter the event ID : ')
         username=input('Enter your name : ')
         current_date = str(datetime.date.today())
         current_date = current_date.replace('-','')
@@ -115,20 +146,21 @@ def createTicket(removed,last_id):
 def DisplayByDate(tickets):
     current_date = str(datetime.date.today())
     current_date = current_date.replace('-','')
+    print('this tickets before sortig\n',tickets)
+    sorted_tickets=merge_sort(tickets,'date')
     print('\nEvents of today\'s date :\n')
-
-    for ticket in tickets :
+    for ticket in sorted_tickets :
         if ticket['date']== current_date:
             print(ticket)
  
     tomorrow_date= int(current_date)+1
 
     print('\nEvents of tomorrow\'s date :\n')
-    for ticket in tickets :
+    for ticket in sorted_tickets :
         if ticket['date']== str(tomorrow_date):
             print(ticket)
     print('\nUpcoming Events :\n')
-    for ticket in tickets :
+    for ticket in sorted_tickets :
         if ticket['date']> current_date and ticket['date']!= str(tomorrow_date):
             print(ticket)
                       
@@ -141,14 +173,16 @@ def ChangePriority(tickets,tickets_id):
 
         with open('events_data.txt', 'r') as file:
             lines = file.readlines()
-        print()    
+        
 
         for i, line in enumerate(lines):
 
-
+            print('this is index',i)
+            print('this is line before', line)
             ticket_id, event_id, username,date, priority = line.strip().split(',')
             if ticket_id == ticket_id_to_change:
                 lines[i] = f"{ticket_id},{event_id},{username},{date},{desired_priority}\n"
+                print('this is line after editing ',line[i])
                 break
 
 
