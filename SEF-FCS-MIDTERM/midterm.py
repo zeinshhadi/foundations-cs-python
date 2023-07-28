@@ -171,24 +171,6 @@ def ChangePriority(tickets,tickets_id):
     else:    
         desired_priority = check_integer_input('Enter the priority to update it : ')    
 
-        with open('events_data.txt', 'r') as file:
-            lines = file.readlines()
-        
-
-        for i, line in enumerate(lines):
-
-            print('this is index',i)
-            print('this is line before', line)
-            ticket_id, event_id, username,date, priority = line.strip().split(',')
-            if ticket_id == ticket_id_to_change:
-                lines[i] = f"{ticket_id},{event_id},{username},{date},{desired_priority}\n"
-                print('this is line after editing ',line[i])
-                break
-
-
-        with open('events_data.txt', 'w') as file:
-            file.writelines(lines)
-
         for ticket in tickets:
             if ticket['ticket_id'] == ticket_id_to_change:
                 ticket['priority']=desired_priority
