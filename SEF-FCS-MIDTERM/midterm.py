@@ -4,7 +4,7 @@ import verify_user as verify_user
 
 ##### - integer check input - #####
 def check_integer_input(number): # O(N)
-    while True:
+    while True :
         try:
             user_input = int(input(number))
             return user_input
@@ -116,9 +116,10 @@ def GetTicketsId(tickets_id):
 
 ###### -  Get Last Id - ########
 
-def GetLastId(removed,tickets):
-    if removed == True:
-        pass
+def GetLastId(removed,tickets,next_id):
+    if removed == True and next_id!=None:
+        next_ticket_id = int(next_id[4:])
+        return next_ticket_id
     else: 
         last_index = len(tickets)-1
         last_ticket_id =tickets[last_index]['ticket_id']
@@ -137,14 +138,32 @@ def HighestTicketsNum(events):
 
 ####### - Create Ticket - ########
 
-def createTicket(removed,last_id,tickets):
+def createTicket(removed,last_id,tickets,next_id):
     
-    if removed == True:
-        pass
+    if removed == True and next_id!=None:
+        current_id_num =next_id
+        ticket_id = str('tick')+ str(current_id_num)
+        event_id=input('Enter the event ID with deleted before id: ')
+        username=input('Enter your name : ')
+        current_date = str(datetime.date.today())
+        current_date = current_date.replace('-','')
+        priority=0
+        ticket = {
+                'ticket_id': ticket_id,
+                'event_id': event_id,
+                'username':username,
+                'date': current_date,
+                'priority': priority
+            }
+        print('Following ticket is added with deleted before id: ' , ticket)
+        tickets.append(ticket)
+        return removed==False,next_id==None
+        
+
     else: 
         current_id_num =last_id + 1
         ticket_id = str('tick')+ str(current_id_num)
-        event_id=input('Enter the event ID : ')
+        event_id=input('Enter the event ID for new id ticket: ')
         username=input('Enter your name : ')
         current_date = str(datetime.date.today())
         current_date = current_date.replace('-','')
@@ -197,6 +216,7 @@ def ChangePriority(tickets,tickets_id):
 
 ###### - delete ticket by id - #########
 def DeleteTicket(tickets,tickets_id):
+    next_id=''
     id_to_delete = input('Enter a valid ticket ID to delete : ')
     if id_to_delete not in tickets_id:
         print(f"\nTicket ID '{id_to_delete}' you entered is not found.\n")
@@ -205,7 +225,10 @@ def DeleteTicket(tickets,tickets_id):
            
             if ticket['ticket_id']==id_to_delete:
                 tickets.remove(ticket)
+                removed = True
+                next_id=id_to_delete
                 print('The following ticket has been removed : ',ticket)
+                return removed,next_id
 
 ##### - Run Events - #######
 def RunEvents (sorted_by_priority):
@@ -220,6 +243,7 @@ def RunEvents (sorted_by_priority):
 
 def main():
     removed=False
+    next_id=None
     attempts = 5
     tickets=[]
     events={}
@@ -256,8 +280,14 @@ def main():
                     case 1:
                         print(HighestTicketsNum(events))  
                     case 2:
-                        last_id = GetLastId(removed,tickets)
-                        createTicket(removed,last_id,tickets)
+                        print(next_id)
+                        if next_id == None:
+                            last_id = GetLastId(removed,tickets)
+                            createTicket(removed,last_id,tickets,next_id)
+                        else:
+                            last_id=None
+                            next_id_num = GetLastId(removed,tickets,next_id)
+                            removed,next_id=createTicket(removed,last_id,tickets,next_id_num)                                
                        
                     case 3:
                         DisplayByDate(tickets)
@@ -268,7 +298,9 @@ def main():
                     case 5:
                         tickets_id=[]
                         GetTicketsId(tickets_id)                   
-                        DeleteTicket(tickets,tickets_id)
+                        removed,next_id =DeleteTicket(tickets,tickets_id)
+                        print('this is next id: ',next_id)
+                        print(removed)
                     case 6:
                         sorted_by_priority=merge_sort(tickets,'priority')
                         sorted_by_priority.reverse()
@@ -281,7 +313,7 @@ def main():
     else:
         print('Signed in as User')
         while choice!=2:
-            displayAdminMenu()
+            displayUserMenu()
             choice= check_integer_input('Enter your choice between 1 and 2 : ')
             if choice>=1 and choice<=7:
                 match choice:
