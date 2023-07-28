@@ -326,10 +326,6 @@ def main():
                         if next_id == None:
                             last_id = GetLastId(removed,tickets,next_id)
                             createTicket(removed,last_id,tickets,next_id,role)
-                        else:
-                            last_id=None
-                            next_id_num = GetLastId(removed,tickets,next_id)
-                            removed,next_id=createTicket(removed,last_id,tickets,next_id_num,role)    
             else:
                 print('\n Choice should be between 1 and 2 ')  
         
