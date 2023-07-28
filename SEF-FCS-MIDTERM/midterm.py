@@ -238,8 +238,10 @@ def RunEvents (sorted_by_priority):
     for ticket in sorted_by_priority :
         if ticket['date']== current_date:
             today_event.append(ticket)
-            sorted_by_priority.remove(ticket) 
-    return print(f'Today\s Events were : {today_event}\n\n\nRemaining Events are {sorted_by_priority}')        
+            sorted_by_priority.remove(ticket)
+    tickets=sorted_by_priority         
+    print(f'Today\s Events were : {today_event}\n\n\nRemaining Events are {sorted_by_priority}')
+    return tickets        
 
 def main():
     removed=False
@@ -304,7 +306,7 @@ def main():
                     case 6:
                         sorted_by_priority=merge_sort(tickets,'priority')
                         sorted_by_priority.reverse()
-                        RunEvents(sorted_by_priority)
+                        tickets=RunEvents(sorted_by_priority)
 
             else:
                 print('\n Choice should be between 1 and 7 ')
