@@ -174,12 +174,12 @@ def main():
 
 
     choice=0
-    # print('\n\nWelcome to our Events ticketing system !\nplease enter your username and password to enter as an admin,\nelse just proceed with an empty values if user :')
+    print('\n\nWelcome to our Events ticketing system !\nplease enter your username and password to enter as an admin,\nelse just proceed with an empty values if user :')
 
-    # username=input('\n\nEnter your admin username : ')
-    # password= input('\n\nEnter your username\'s password to proceed as admin : ')
+    username=input('\n\nEnter your admin username : ')
+    password= input('\n\nEnter your username\'s password to proceed as admin : ')
     
-    # admin =verify_user.VerifyLogin(username,password,'users.txt')
+    admin =verify_user.VerifyLogin(username,password,'users.txt')
     admin=True
     if admin==True:
 
