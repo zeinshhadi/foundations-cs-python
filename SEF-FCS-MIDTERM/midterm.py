@@ -21,8 +21,8 @@ def merge_sort(arr,option):
     left_half = arr[:mid]
     right_half = arr[mid:]
 
-    left_half = merge_sort(left_half)
-    right_half = merge_sort(right_half)
+    left_half = merge_sort(left_half,option)
+    right_half = merge_sort(right_half,option)
 
     return merge(left_half, right_half,option)
 
@@ -117,7 +117,7 @@ def HighestTicketsNum(events):
 
 ####### - Create Ticket - ########
 
-def createTicket(removed,last_id):
+def createTicket(removed,last_id,tickets):
     
     if removed == True:
         pass
@@ -146,7 +146,6 @@ def createTicket(removed,last_id):
 def DisplayByDate(tickets):
     current_date = str(datetime.date.today())
     current_date = current_date.replace('-','')
-    print('this tickets before sortig\n',tickets)
     sorted_tickets=merge_sort(tickets,'date')
     print('\nEvents of today\'s date :\n')
     for ticket in sorted_tickets :
@@ -174,36 +173,44 @@ def ChangePriority(tickets,tickets_id):
         for ticket in tickets:
             if ticket['ticket_id'] == ticket_id_to_change:
                 ticket['priority']=desired_priority
-                print(ticket)        
+                print(ticket)     
 
+###### - delete ticket by id - #########
+def DeleteTicket(tickets,tickets_id):
+    id_to_delete = input('Enter a valid ticket ID to delete : ')
+    if id_to_delete not in tickets_id:
+        print(f"\nTicket ID '{id_to_delete}' you entered is not found.\n")
+    else:    
+        for ticket in tickets:
+           
+            if ticket['ticket_id']==id_to_delete:
+                tickets.remove(ticket)
+                print('The following ticket has been removed : ',ticket)
 
-                             
 def main():
     removed=False
-    global tickets
+
     tickets=[]
     events={}
 
-    
     UploadTickets(tickets,events)
-
-
 
     choice=0
     print('\n\nWelcome to our Events ticketing system !\nplease enter your username and password to enter as an admin,\nelse just proceed with an empty values if user :')
 
-    username=input('\n\nEnter your admin username : ')
-    password= input('\n\nEnter your username\'s password to proceed as admin : ')
+    # username=input('\n\nEnter your admin username : ')
+    # password= input('\n\nEnter your username\'s password to proceed as admin : ')
     
-    admin =verify_user.VerifyLogin(username,password,'users.txt')
+    # admin =verify_user.VerifyLogin(username,password,'users.txt')
     admin=True
     if admin==True:
 
         print('Signed in as Admin')
-        displayAdminMenu()
+       
         
         
         while choice!=7:
+            displayAdminMenu()
             choice= check_integer_input('Enter your choice between 1 and 7 : ')
             if choice>=1 and choice<=7:
                 match choice:
@@ -211,7 +218,7 @@ def main():
                         print(HighestTicketsNum(events))  
                     case 2:
                         last_id = GetLastId(removed,tickets)
-                        createTicket(removed,last_id)
+                        createTicket(removed,last_id,tickets)
                        
                     case 3: 
                         DisplayByDate(tickets)
@@ -219,6 +226,10 @@ def main():
                         tickets_id=[]
                         GetTicketsId(tickets_id) 
                         ChangePriority(tickets,tickets_id)
+                    case 5:
+                        tickets_id=[]
+                        GetTicketsId(tickets_id)
+                        DeleteTicket(tickets,tickets_id)     
             else:
                 print('\n Choice should be between 1 and 7 ')
 
