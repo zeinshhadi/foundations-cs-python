@@ -1,7 +1,15 @@
 import datetime
 import verify_user as verify_user
 
+######## - Display Menus According to user start- #######################
+def displayAdminMenu():
+  
+  print("\n\nChoose from the following :\n1. Display Statistics\n2. Book a Ticket\n3. Dsiplay All Tickets\n4. Change Ticket's Priority\n5. Disable Ticket\n6. Run Events\n7. exit\n")
 
+def displayUserMenu():
+  
+  print("\n\nChoose from the following :\n1. Book a Ticket\n2. exit\n")
+######## - Display Menus According to user end - #######################
 ##### - integer check input - #####
 def check_integer_input(number): # O(N)
     while True :
@@ -67,15 +75,7 @@ def binary_search(arr, low, high, x):
     else:
    
         return 'ID not found in list'
-######## - Display Menus According to user start- #######################
-def displayAdminMenu():
-  
-  print("\n\nChoose from the following :\n1. Display Statistics\n2. Book a Ticket\n3. Dsiplay All Tickets\n4. Change Ticket's Priority\n5. Disable Ticket\n6. Run Events\n7. exit\n")
 
-def displayUserMenu():
-  
-  print("\n\nChoose from the following :\n1. Display Statistics\n2. Book a Ticket\n")
-######## - Display Menus According to user end - #######################
 
 
 ####### - Upload tickets and events to corresponding lists and dictionaries - ########
@@ -138,7 +138,7 @@ def HighestTicketsNum(events):
 
 ####### - Create Ticket - ########
 
-def createTicket(removed,last_id,tickets,next_id):
+def createTicket(removed,last_id,tickets,next_id,role):
     
     if removed == True and next_id!=None:
         current_id_num =next_id
@@ -176,10 +176,10 @@ def createTicket(removed,last_id,tickets,next_id):
                 'priority': priority
             }
         tickets.append(ticket)
-        
-    with open('events_data.txt', 'a')as t_db:
-        ticket_data = f"{ticket_id},{event_id},{username},{current_date},{priority}\n"
-        t_db.write(ticket_data)
+    if role=='user':    
+        with open('events_data.txt', 'a')as t_db:
+            ticket_data = f"{ticket_id},{event_id},{username},{current_date},{priority}\n"
+            t_db.write(ticket_data)
 
     
 def DisplayByDate(tickets):
@@ -275,6 +275,7 @@ def main():
         
         
         while choice!=7:
+            role='admin'
             displayAdminMenu()
             choice= check_integer_input('Enter your choice between 1 and 7 : ')
             if choice>=1 and choice<=7:
@@ -284,12 +285,12 @@ def main():
                     case 2:
                         print(next_id)
                         if next_id == None:
-                            last_id = GetLastId(removed,tickets)
-                            createTicket(removed,last_id,tickets,next_id)
+                            last_id = GetLastId(removed,tickets,next_id)
+                            createTicket(removed,last_id,tickets,next_id,role)
                         else:
                             last_id=None
                             next_id_num = GetLastId(removed,tickets,next_id)
-                            removed,next_id=createTicket(removed,last_id,tickets,next_id_num)                                
+                            removed,next_id=createTicket(removed,last_id,tickets,next_id_num,role)                                
                        
                     case 3:
                         DisplayByDate(tickets)
@@ -314,14 +315,21 @@ def main():
 
     else:
         print('Signed in as User')
+        role='user'
         while choice!=2:
             displayUserMenu()
             choice= check_integer_input('Enter your choice between 1 and 2 : ')
             if choice>=1 and choice<=7:
                 match choice:
                     case 1:
-                        last_id = GetLastId(removed,tickets)
-                        createTicket(removed,last_id,tickets)
+                        print(next_id)
+                        if next_id == None:
+                            last_id = GetLastId(removed,tickets,next_id)
+                            createTicket(removed,last_id,tickets,next_id,role)
+                        else:
+                            last_id=None
+                            next_id_num = GetLastId(removed,tickets,next_id)
+                            removed,next_id=createTicket(removed,last_id,tickets,next_id_num,role)    
             else:
                 print('\n Choice should be between 1 and 2 ')  
         
