@@ -1,8 +1,7 @@
 import datetime
 import verify_user as verify_user
 
-current_date = str(datetime.date.today())
-current_date = current_date.replace('-','')
+
 ##### - integer check input - #####
 def check_integer_input(number): # O(N)
     while True:
@@ -96,7 +95,8 @@ def createTicket(removed,last_id):
         ticket_id = str('tick')+ str(current_id_num)
         event_id='ev008'
         username=input('Enter your name : ')
-        current_date = current_date
+        current_date = str(datetime.date.today())
+        current_date = current_date.replace('-','')
         priority=0
         ticket = {
                 'ticket_id': ticket_id,
@@ -113,6 +113,8 @@ def createTicket(removed,last_id):
 
     
 def DisplayByDate(tickets):
+    current_date = str(datetime.date.today())
+    current_date = current_date.replace('-','')
     print('\nEvents of today\'s date :\n')
 
     for ticket in tickets :
@@ -186,7 +188,7 @@ def main():
         
         
         while choice!=7:
-            choice= check_integer_input('Enter your choice : ')
+            choice= check_integer_input('Enter your choice between 1 and 7 : ')
             if choice>=1 and choice<=7:
                 match choice:
                     case 1:
