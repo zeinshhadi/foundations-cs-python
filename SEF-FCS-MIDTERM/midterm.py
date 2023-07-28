@@ -46,7 +46,27 @@ def merge(left, right,option):
     
     return merged_list
             
+###### - BS Algorithm - ######
 
+def binary_search(arr, low, high, x):
+ 
+
+    if high >= low:
+ 
+        mid = (high + low) // 2
+ 
+        if arr[mid] == x:
+            return mid
+
+        elif arr[mid] > x:
+            return binary_search(arr, low, mid - 1, x)
+
+        else:
+            return binary_search(arr, mid + 1, high, x)
+ 
+    else:
+   
+        return 'ID not found in list'
 ######## - Display Menus According to user start- #######################
 def displayAdminMenu():
   
@@ -187,6 +207,17 @@ def DeleteTicket(tickets,tickets_id):
                 tickets.remove(ticket)
                 print('The following ticket has been removed : ',ticket)
 
+##### - Run Events - #######
+def RunEvents (sorted_by_priority):
+    today_event=[]
+    current_date = str(datetime.date.today())
+    current_date = current_date.replace('-','')
+    for ticket in sorted_by_priority :
+        if ticket['date']== current_date:
+            today_event.append(ticket)
+            sorted_by_priority.remove(ticket) 
+    return print(f'Today\s Events were : {today_event}\n\n\nRemaining Events are {sorted_by_priority}')        
+
 def main():
     removed=False
 
@@ -220,7 +251,7 @@ def main():
                         last_id = GetLastId(removed,tickets)
                         createTicket(removed,last_id,tickets)
                        
-                    case 3: 
+                    case 3:
                         DisplayByDate(tickets)
                     case 4:
                         tickets_id=[]
@@ -228,8 +259,13 @@ def main():
                         ChangePriority(tickets,tickets_id)
                     case 5:
                         tickets_id=[]
-                        GetTicketsId(tickets_id)
-                        DeleteTicket(tickets,tickets_id)     
+                        GetTicketsId(tickets_id)                   
+                        DeleteTicket(tickets,tickets_id)
+                    case 6:
+                        sorted_by_priority=merge_sort(tickets,'priority')
+                        sorted_by_priority.reverse()
+                        RunEvents(sorted_by_priority)
+
             else:
                 print('\n Choice should be between 1 and 7 ')
 
