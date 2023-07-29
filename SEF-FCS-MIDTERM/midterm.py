@@ -91,7 +91,7 @@ def merge(left, right,option):
     return merged_list
             
 ####### - Upload tickets and events to corresponding lists and dictionaries - ########
-def UploadTickets( tickets, events):
+def UploadTickets( tickets):
     with open('events_data.txt', 'r') as file:
         for line in file:
             ticket_data = line.strip().split(',')
@@ -112,7 +112,7 @@ def UploadTickets( tickets, events):
             }
             tickets.append(ticket)
 
-            events.setdefault(ticket_data[1], []).append(event)
+    
 
 ####### - Add Ids to a list - ########
 
@@ -143,15 +143,30 @@ def GetLastId(removed,tickets,deleted_id):
         
         return last_ticket_id
 
-def HighestTicketsNum(events):
+def HighestTicketsNum(tickets):
+    event_by_tickets_dict = {}
+
+    for ticket in tickets:
+        event_id = ticket["event_id"]
+        ticket_info = {}
+        for key, value in ticket.items():
+            if key != "event_id":
+                ticket_info[key] = value
+
+        if event_id in event_by_tickets_dict:
+            event_by_tickets_dict[event_id].append(ticket_info)
+        else:
+            event_by_tickets_dict[event_id] = [ticket_info]
 
     highest =0
     highest_key=''
-    for key, value in events.items():
+    for key, value in event_by_tickets_dict.items():
         if len(value)>highest:
             highest=len(value)
             highest_key=key
     return f'Event {highest_key} has the highest number of tickets {highest}'   
+
+
 
 ####### - Create Ticket - ########
 
@@ -296,13 +311,13 @@ def main():
     next_id=None
     attempts = 5
     tickets=[]
-    events={}
+
     
     global deleted_id
     deleted_id=[]
     global tickets_id
     tickets_id=[]
-    UploadTickets(tickets,events)
+    UploadTickets(tickets)
     tickets=sort_id(tickets)
     GetTicketsId(tickets_id)  
     choice=0
@@ -335,7 +350,8 @@ def main():
             if choice>=1 and choice<=7:
                 match choice:
                     case 1:
-                        print(HighestTicketsNum(events))  
+                        
+                        print(HighestTicketsNum(tickets))  
                     case 2:
                         
                         if len(deleted_id) == 0:
@@ -373,6 +389,7 @@ def main():
                         sorted_by_priority.reverse()
                         tickets,deleted_id=RunEvents(sorted_by_priority,deleted_id)
                         print('\n\ntickets ramining after running events : ' , tickets)
+
             
 
             else:
