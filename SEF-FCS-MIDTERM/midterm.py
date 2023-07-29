@@ -297,6 +297,7 @@ def RunEvents (sorted_by_priority,deleted_id):
                 print('\n\nthis ticket is today and will be removed : ', ticket)
                 today_event.append(ticket)
                 deleted_id.append(ticket['ticket_id'])
+                deleted_id.sort()
                 sorted_by_priority.remove(ticket)
                 
         size-=1
@@ -377,6 +378,7 @@ def main():
                         ChangePriority(tickets,tickets_id)
                     case 5:                        
                         removed,deleted_id =DeleteTicket(tickets,tickets_id,deleted_id)
+                        deleted_id.sort()
                         print('this is next id: ',deleted_id)
                         print(removed)
                     case 6:
