@@ -18,6 +18,42 @@ def check_integer_input(number): # O(N)
             return user_input
         except ValueError:
             print("Invalid input. Please enter an integer.")
+##### - merge sort for sorting ID - ######
+
+def sort_id(tickets):
+    if len(tickets) <= 1:
+        return tickets
+
+    mid = len(tickets) // 2
+    left_half_id = tickets[:mid]
+    right_half_id = tickets[mid:]
+
+    left_half_id = sort_id(left_half_id)
+    right_half_id = sort_id(right_half_id)
+
+    return sort_merge_id(left_half_id, right_half_id)
+
+def sort_merge_id(left, right):
+    merged_list_id = []
+    left_index_id, right_index_id = 0, 0
+
+    while left_index_id < len(left) and right_index_id < len(right):
+        if left[left_index_id]["ticket_id"] < right[right_index_id]["ticket_id"]:
+            merged_list_id.append(left[left_index_id])
+            left_index_id += 1
+        else:
+            merged_list_id.append(right[right_index_id])
+            right_index_id += 1
+
+    merged_list_id.extend(left[left_index_id:])
+    merged_list_id.extend(right[right_index_id:])
+    return merged_list_id
+
+
+
+
+
+
 
 ##### - Merge Sort - ############
 
@@ -119,11 +155,13 @@ def GetTicketsId(tickets_id):
 def GetLastId(removed,tickets,next_id):
     if removed == True and next_id!=None:
         next_ticket_id = int(next_id[4:])
+        
         return next_ticket_id
     else: 
         last_index = len(tickets)-1
         last_ticket_id =tickets[last_index]['ticket_id']
         last_ticket_id = int(last_ticket_id[4:])
+        
         return last_ticket_id
 
 def HighestTicketsNum(events):
@@ -157,7 +195,9 @@ def createTicket(removed,last_id,tickets,next_id,role):
             }
         print('Following ticket is added with deleted before id: ' , ticket)
         tickets.append(ticket)
-        return removed==False,next_id==None
+        sort_id(tickets)
+        print('tickets sorted after deleteing an if : ',tickets)
+        
         
 
     else: 
@@ -175,6 +215,7 @@ def createTicket(removed,last_id,tickets,next_id,role):
                 'date': current_date,
                 'priority': priority
             }
+        print('Following ticket is added : ' , ticket)
         tickets.append(ticket)
     if role=='user':    
         with open('events_data.txt', 'a')as t_db:
@@ -288,9 +329,13 @@ def main():
                             last_id = GetLastId(removed,tickets,next_id)
                             createTicket(removed,last_id,tickets,next_id,role)
                         else:
-                            last_id=None
+                            temp=None
                             next_id_num = GetLastId(removed,tickets,next_id)
-                            removed,next_id=createTicket(removed,last_id,tickets,next_id_num,role)                                
+                            createTicket(removed,temp,tickets,next_id_num,role)
+                            removed =False
+                            next_id=None
+                            tickets=sort_id(tickets)
+                            print('\n\nsorted tickets  :\n',tickets)
                        
                     case 3:
                         DisplayByDate(tickets)
