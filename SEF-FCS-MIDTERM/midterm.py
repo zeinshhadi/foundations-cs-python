@@ -330,21 +330,20 @@ def main():
     tickets=sort_id(tickets)
     GetTicketsId(tickets_id)  
     choice=0
-    # print('\n\nWelcome to our Events ticketing system !\nplease enter your username and password to enter as an admin,\nelse just proceed with an empty values if user :')
-    # while attempts>0:
-    #     username=input('\n\nEnter your admin username : ')
-    #     password= input('\n\nEnter your username\'s password to proceed as admin : ')
+    print('\n\nWelcome to our Events ticketing system !\nplease enter your username and password to enter as an admin,\nelse just proceed with an empty values if user :')
+    while attempts>0:
+        username=input('\n\nEnter your admin username : ')
+        password= input('\n\nEnter your username\'s password to proceed as admin : ')
 
-    #     admin =verify_user.VerifyLogin(username,password,'users.txt')
-    #     if username == 'admin' and admin==True:
-    #         attempts=0
-    #     elif username =='admin' and admin ==False:
-    #         print(f'Enter a valid username and password , you have {attempts} remaining')
-    #         attempts-=1
-    #     else: 
-    #         attempts=0
-    #         admin=False    
-    admin=True
+        admin =verify_user.VerifyLogin(username,password,'users.txt')
+        if username == 'admin' and admin==True:
+            attempts=0
+        elif username =='admin' and admin ==False:
+            print(f'Enter a valid username and password , you have {attempts} remaining')
+            attempts-=1
+        else: 
+            attempts=0
+            admin=False    
     if admin==True:
 
         print('Signed in as Admin')
