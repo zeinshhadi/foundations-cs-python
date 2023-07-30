@@ -136,12 +136,12 @@ def UploadTickets(tickets):  # TIME COMPLEXITY : O(N) // since open() returns a 
             tickets.append(ticket)
 
 
-############# - Add Ids to a list - #################
+############################# - Add Ids to a list - #########################################
 # The following function will alse open the file storing the data and gets only the first index after splitting using the comma delimiter which is the ticcket ID
 # Then the ids will be stored in a global list defined in the main called tickets_id
 # This list is used to handle the next ticket ID that will be added to the system,so this list will handle the already used ids
 
-def GetTicketsId():
+def GetTicketsId():#O(N) // since it holds a for loop
     with open('events_data.txt', 'r') as file:
         for line in file:
             ticket_data = line.strip().split(',')
@@ -151,7 +151,7 @@ def GetTicketsId():
         return tickets_id
 
 
-###### -  Get Last Id - ########
+########################## -  Get Last Id - ############################
 # The following function will get the last id of the tickets , bby this we handled that the next ticket to be added will have the (oldId +1) since ID is auto incrementing
 # removed in parameters is a boolean inialized in the main function and used when a ticket is deleted.
 # when deleted a ticket removed get a true to let the function know that we have a deleted ID that should be the next id added to the nxt ticket
@@ -165,7 +165,7 @@ def GetLastId(removed, tickets):  # O(1) // ALL of the function is using constan
         next_id = deleted_id[0]              # next_id is the id that will be added next to the net ticket will be equal to the fist index of the deleted_id list
 
         deleted_id.remove(deleted_id[0])     # The taken id which is in the first index then is removed from the deleted_id list to prevent duplication
-        
+
         next_ticket_id = int(next_id[4:])    # The tickets id pattern is as dollows: tick100 , tick101, tick103,.. etc so in this line im taking a substring where
                                              # i remove the 'tick' part and store the number after it as an integer using concatination
 
