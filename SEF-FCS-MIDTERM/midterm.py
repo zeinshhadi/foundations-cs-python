@@ -321,52 +321,52 @@ def ChangePriority(tickets):#O(N) // 2 dependent loops O(N) each
 # the following functiion delete a ticket user chooses through entering id
 
 def DeleteTicket(tickets):#O(N) 1 loop
-    removed_ticket = None
-    print('\n\nthis is ticket_id from function :', tickets_id)
+    removed_ticket = None    #inializing a removed ticket variable as none to make it equal ticket if removed 
     id_to_delete = input('Enter a valid ticket ID to delete: ')         
     for ticket in tickets:
-        if ticket['ticket_id'] == id_to_delete:
+        if ticket['ticket_id'] == id_to_delete:  #if id is found removed_ticket will be equal to removed ticket and not None anymore
             removed_ticket = ticket
-            tickets.remove(ticket)
+            tickets.remove(ticket)     #we remove the ticket from tickets list then we break since ids are unique no need to continue looping around
             break
-    if removed_ticket:
+    if removed_ticket:   #check if removed_tickets is None. if It is not equal to None we remove the id from the tickets_id and we append it to the deleted_id to use for next ticket booking
         tickets_id.remove(id_to_delete)
         deleted_id.append(str(id_to_delete))
         print('The following ticket has been removed:', removed_ticket)
         return True
-    else:
+    else:                                                   #remoevd_ticket is None we return id not found
         print('ID not found in the list')
         return False
 
 ############################ - Run Events - ####################################
-def RunEvents(sorted_by_priority, deleted_id):
+
+#to be edited 
+def RunEvents(sorted_by_priority):
+    count=0
     today_event = []
     current_date = str(datetime.date.today())
     current_date = current_date.replace('-', '')
-    size = len(sorted_by_priority)-1
-    while size > 0:
-        for ticket in sorted_by_priority:
-            if ticket['date'] == current_date:
-                print('\n\nthis ticket is today and will be removed : ', ticket)
-                today_event.append(ticket)
-                deleted_id.append(ticket['ticket_id'])
-                deleted_id.sort()
-                tickets_id.remove(ticket['ticket_id'])
-                sorted_by_priority.remove(ticket)
-
-        size -= 1
-
-    return sorted_by_priority, deleted_id
+    for ticket in sorted_by_priority:
+        count+=1
+        if ticket['date'] == current_date:
+            print('\n\nthis ticket is running today and will be removed : ', ticket)
+            sorted_by_priority.remove(ticket)
+            today_event.append(ticket)
+            deleted_id.append(ticket['ticket_id'])
+            deleted_id.sort()
+            tickets_id.remove(ticket['ticket_id'])
+            
+    print(count)
 
 
-# ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+    return sorted_by_priority
 
+
+# ---------------------------------------------------------------------------------------------------#
 def main():
     removed = False
     next_id = None
     attempts = 5
     tickets = []
-
     global deleted_id
     deleted_id = []
     global tickets_id
@@ -429,14 +429,14 @@ def main():
                             removed = False
                             tickets = sort_id(tickets)
 
-                            print('\n\nsorted tickets  :\n', tickets)
+                         
 
                     case 3:
 
                         DisplayByDate(tickets)
                     case 4:
 
-                        ChangePriority(tickets, tickets_id)
+                        ChangePriority(tickets)
 
                     case 5:
                         removed = DeleteTicket(tickets)
@@ -444,9 +444,8 @@ def main():
                     case 6:
                         sorted_by_priority = merge_sort(tickets, 'priority')
                         sorted_by_priority.reverse()
-                        tickets, deleted_id = RunEvents(
-                            sorted_by_priority, deleted_id)
-                        print('\n\ntickets ramining after running events : ', tickets)
+                        tickets = RunEvents(sorted_by_priority)
+
 
             else:
                 print('\n Choice should be between 1 and 7 ')
