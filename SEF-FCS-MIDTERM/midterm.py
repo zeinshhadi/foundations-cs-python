@@ -340,25 +340,21 @@ def DeleteTicket(tickets):#O(N) 1 loop
 ############################ - Run Events - ####################################
 
 #to be edited 
-def RunEvents(sorted_by_priority):
-    count=0
-    today_event = []
+def RunEvents(sorted_by_priority,tickets):
+   
     current_date = str(datetime.date.today())
-    current_date = current_date.replace('-', '')
+    current_date = current_date.replace('-','')
+    size=len(sorted_by_priority)-1
+
     for ticket in sorted_by_priority:
-        count+=1
         if ticket['date'] == current_date:
             print('\n\nthis ticket is running today and will be removed : ', ticket)
-            sorted_by_priority.remove(ticket)
-            today_event.append(ticket)
+            tickets.remove(ticket)
             deleted_id.append(ticket['ticket_id'])
             deleted_id.sort()
             tickets_id.remove(ticket['ticket_id'])
-            
-    print(count)
 
-
-    return sorted_by_priority
+    return tickets
 
 
 # ---------------------------------------------------------------------------------------------------#
@@ -419,13 +415,10 @@ def main():
                         else:
                             removed = True
                             temp = None
-
                             next_id_num = GetLastId(
                                 removed, tickets)
-                            print('this is the deletedddddd : ', deleted_id)
                             print('this is next id num : ', next_id_num)
-                            CreateTicket(removed, temp, tickets,
-                                         next_id_num, role)
+                            CreateTicket(removed, temp, tickets,next_id_num, role)
                             removed = False
                             tickets = sort_id(tickets)
 
@@ -444,7 +437,7 @@ def main():
                     case 6:
                         sorted_by_priority = merge_sort(tickets, 'priority')
                         sorted_by_priority.reverse()
-                        tickets = RunEvents(sorted_by_priority)
+                        tickets = RunEvents(sorted_by_priority,tickets)
 
 
             else:
@@ -460,9 +453,8 @@ def main():
             if choice >= 1 and choice <= 7:
                 match choice:
                     case 1:
-                        print(next_id)
                         if len(deleted_id) == 0:
-                            last_id = GetLastId(removed, tickets, deleted_id)
+                            last_id = GetLastId(removed, tickets)
                             CreateTicket(removed, last_id,
                                          tickets, deleted_id, role)
             else:
