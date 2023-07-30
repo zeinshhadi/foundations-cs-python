@@ -1,24 +1,35 @@
+
+# In the following ticketing system , removed ID chosen by user is handled in  a way that the next ticket to be added after a deleted one will tkae the deleted id and dort the tickets by id 
+
 import datetime
 import verify_user as verify_user
-
-######## - Display Menus According to user start- #######################
+#-------------------------------------------------------Displaying Menus Section--------------------------------------------------------------------------------------------------------------#
+######## - Display Menu to admin - #######################
 def displayAdminMenu():
   
   print("\n\nChoose from the following :\n1. Display Statistics\n2. Book a Ticket\n3. Dsiplay All Tickets\n4. Change Ticket's Priority\n5. Disable Ticket\n6. Run Events\n7. exit\n")
-
+######## - Display User to admin - #######################
 def displayUserMenu():
   
   print("\n\nChoose from the following :\n1. Book a Ticket\n2. exit\n")
-######## - Display Menus According to user end - #######################
+
+#--------------------------------------------------Integer input check Section---------------------------------------------------------------------------------------------------------------------#
+
 ##### - integer check input - #####
+# This function check if the user entered an integer when needed, if the user entered a string instead of an integer for example Try and catch will throw an exception to handle the error 
+# displaying a message of an Invalid input to user and asking him i re-enter an integer 
+
 def check_integer_input(number): # O(N)
-    while True :
-        try:
+    while True : 
+        try: # Here the user will enter the input and if it is True then the user_input is an integer and it will be accepted 
             user_input = int(input(number))
             return user_input
-        except ValueError:
+        except ValueError: # if user didn't enter an integer,ValueError will thrown,ValueError is a type which will check the value if integer in this case,if it is not it will thow the invalid input message in this case
             print("Invalid input. Please enter an integer.")
+
+#------------------------------------------------Merge Sort Algorithms Section----------------------------------------------------------------------------------------------------------------------#            
 ##### - merge sort for sorting ID - ######
+
 
 def sort_id(tickets):
     if len(tickets) <= 1:
@@ -49,12 +60,6 @@ def sort_merge_id(left, right):
     merged_list_id.extend(right[right_index_id:])
     return merged_list_id
 
-
-
-
-
-
-
 ##### - Merge Sort - ############
 
 def merge_sort(arr,option):
@@ -75,10 +80,10 @@ def merge(left, right,option):
     left_idx, right_idx = 0, 0
 
     while left_idx < len(left) and right_idx < len(right):
-        left_date = int(left[left_idx][option])
-        right_date = int(right[right_idx][option])
+        left_side = int(left[left_idx][option])
+        right_side = int(right[right_idx][option])
 
-        if left_date <= right_date:
+        if left_side <= right_side:
             merged_list.append(left[left_idx])
             left_idx += 1
         else:
@@ -89,35 +94,45 @@ def merge(left, right,option):
     merged_list.extend(right[right_idx:])
     
     return merged_list
-            
+
+#----------------------------------------------------Tickets uploading , getting ID and the last ID of the tickets section-------------------------------------------------------------------------------------------------------------#
+ 
+           
 ####### - Upload tickets and events to corresponding lists and dictionaries - ########
-def UploadTickets( tickets):
-    with open('events_data.txt', 'r') as file:
-        for line in file:
-            ticket_data = line.strip().split(',')
-            if len(ticket_data) < 5:
+
+# The following function takes tickets as parameter
+#Open the events_data.txt file where the information is stored
+#then it split each line each line takinf ',' as delimiter 
+#it stores then the data in a dictionary named ticket where each key has its own value then this dictionary is added the tickets list 
+
+
+def UploadTickets( tickets): # TIME COMPLEXITY : O(N) // since open() returns a file object which is a pointer or Handle so no time complexity here only for the for loop inside 
+
+
+    with open('events_data.txt', 'r') as file:   # 1. With open is used to close the file after finishing from it. 2. file open as read since we used 'r'
+        for line in file:  #iterating through each line in file
+
+            ticket_data = line.strip().split(',') #1. strip to remove any spaces from the start or the end of the line . 2. split to use ',' as delimieter and split our data
+
+            if len(ticket_data) < 5: #In case a line has less than than the data needed which is 5 in this case we ignore the line by using continue
                 continue
-            ticket = {
+            ticket = {   #Storing our splitted data in a diciotnary according to each index of the data
                 'ticket_id': ticket_data[0],
                 'event_id': ticket_data[1],
                 'username': ticket_data[2],
                 'date': ticket_data[3],
                 'priority': int(ticket_data[4])
             }
-            event = {
-                'ticket_id': ticket_data[0],
-                'username': ticket_data[2],
-                'date': ticket_data[3],
-                'priority': int(ticket_data[4])
-            }
-            tickets.append(ticket)
+            tickets.append(ticket) #adding the dictionaries to the list named tickets 
 
     
 
-####### - Add Ids to a list - ########
+############# - Add Ids to a list - #################
+# The following function will alse open the file storing the data and gets only the first index after splitting using the comma delimiter which is the ticcket ID
+#Then the ids will be stored in a global list defined in the main called tickets_id
+#This list is used to handle the next ticket ID that will be added to the system,so this list will handle the already used ids
 
-
-def GetTicketsId(tickets_id):
+def GetTicketsId():
      with open('events_data.txt', 'r') as file:
         for line in file:
             ticket_data = line.strip().split(',')
@@ -143,8 +158,11 @@ def GetLastId(removed,tickets,deleted_id):
         
         return last_ticket_id
 
+
+#-----------------------------------------------------------Choices chosen functions Section-----------------------------------------------------------------------------------------#
+
 def HighestTicketsNum(tickets):
-    event_by_tickets_dict = {}
+    event_dict = {}
 
     for ticket in tickets:
         event_id = ticket["event_id"]
@@ -153,14 +171,14 @@ def HighestTicketsNum(tickets):
             if key != "event_id":
                 ticket_info[key] = value
 
-        if event_id in event_by_tickets_dict:
-            event_by_tickets_dict[event_id].append(ticket_info)
+        if event_id in event_dict:
+            event_dict[event_id].append(ticket_info)
         else:
-            event_by_tickets_dict[event_id] = [ticket_info]
+            event_dict[event_id] = [ticket_info]
 
     highest =0
     highest_key=''
-    for key, value in event_by_tickets_dict.items():
+    for key, value in event_dict.items():
         if len(value)>highest:
             highest=len(value)
             highest_key=key
@@ -258,7 +276,7 @@ def ChangePriority(tickets,tickets_id):
 ###### - delete ticket by id - #########
 
 
-def DeleteTicket(tickets, tickets_id, deleted_id):                                              
+def DeleteTicket(tickets):                                              
     print('\n\nthis is ticket_id from function :', tickets_id)
     id_to_delete = input('Enter a valid ticket ID to delete: ')
     if id_to_delete == '':
@@ -306,6 +324,9 @@ def RunEvents (sorted_by_priority,deleted_id):
     
     return sorted_by_priority,deleted_id      
 
+
+#----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
 def main():
     removed=False
     next_id=None
@@ -319,7 +340,7 @@ def main():
     tickets_id=[]
     UploadTickets(tickets)
     tickets=sort_id(tickets)
-    GetTicketsId(tickets_id)  
+    GetTicketsId()  
     choice=0
     print('\n\nWelcome to our Events ticketing system !\nplease enter your username and password to enter as an admin,\nelse just proceed with an empty values if user :')
     while attempts>0:
@@ -377,13 +398,11 @@ def main():
                         DisplayByDate(tickets)
                     case 4:
                         
-                       
                         ChangePriority(tickets,tickets_id)
-                    case 5:                        
-                        removed =DeleteTicket(tickets,tickets_id,deleted_id)
-                        deleted_id.sort()
 
-                        print(removed)
+                    case 5:                        
+                        removed =DeleteTicket(tickets)
+                        deleted_id.sort()
                     case 6:
                         sorted_by_priority=merge_sort(tickets,'priority')
                         sorted_by_priority.reverse()
