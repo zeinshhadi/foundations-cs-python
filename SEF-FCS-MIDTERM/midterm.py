@@ -41,7 +41,7 @@ def binary_search_by_id(tickets, target_id):
     right = len(tickets) - 1
 
     while left <= right:
-        mid = left + (right - left) // 2
+        mid = (right+left) // 2
         mid_id = tickets[mid]['ticket_id']
 
         if mid_id == target_id:
@@ -166,6 +166,59 @@ def GetLastId(removed, tickets):  # O(N) // ALL of the function is using constan
         # i remove the 'tick' part and store the number after it as an integer using concatination
 
         return last_ticket_id
+# -----------------------------         --------------------Date Section---------------                 --------------------------#
+############ -  get the date of today - ##########
+def current_date():
+    current_date = str(datetime.date.today())
+    current_date = int(current_date.replace('-', ''))
+    return current_date
+
+############ -  user datew input + validity check - ##########
+def event_date():
+    today_date = current_date()
+
+    dateValidity = False
+
+    date = ''
+    while (dateValidity != True):
+        date = input(
+            'Enter a EVENT DATE formatted as YYYY-MM-DD and starting today\'s date , example (2023-09-08) must conatin 8 digits : ').strip()
+        frontSlashCount = date.count('/')
+        dashCount = date.count('-')
+        if (frontSlashCount == 2 or dashCount
+                == 2):  # Check if user entered complete date with 2 slashes or 2 dashes
+
+            date = date.replace('-',
+                                '/')  # replace '-' with '/' if user entered this option
+
+            year, month, day = date.split(
+                '/'
+            )  # split the date to check if the value of day , month and year are valid and sotre each value to its corresponding variables respectively
+
+            if not (day.isdigit() and month.isdigit()
+                    and year.isdigit()):  # Assure that the user entered only digits
+                print(
+                    "Invalid date format! Please enter the date in the format DD-MM-YYYY.")
+
+            # Assure that the day, month, and year are within valid ranges
+            elif int(day) > 1 and int(day) <= 31 and int(month) > 1 and int(month) <= 12 and int(year) >= 2023:
+
+                date = date.replace('/', '')
+                date = int(date)
+                if date < today_date:
+                    print(f'this the date added ,  {date}')
+                    print(f'this is the current date {today_date}')
+                    print('Invalid date you can\'t reserve an event that passed before')
+                else:
+
+                    return date
+
+            else:
+                print("Invalid date format , check the hint to add a valid date ")
+        else:
+            print("Invalid date format, check the hint to add a valid date")
+            dateValidity = False
+
 
 
 # -----------------------------         --------------------Choices chosen functions Section---------------                 --------------------------#
@@ -226,14 +279,13 @@ def CreateTicket(removed, last_id, tickets, next_id_num, role):
         # user will fill the data here
         event_id = input('Enter the event ID with deleted before id: ')
         username = input('Enter your name : ')
-        current_date = str(datetime.date.today())
-        current_date = current_date.replace('-', '')
+        event_date_added=str(event_date())
         priority = 0
         ticket = {  # data added above will be stored in a ticket dictionary that will be appended after to list tickets
             'ticket_id': ticket_id,
             'event_id': event_id,
             'username': username,
-            'date': current_date,
+            'date': event_date_added,
             'priority': priority
         }
         tickets.append(ticket)
@@ -248,14 +300,13 @@ def CreateTicket(removed, last_id, tickets, next_id_num, role):
         ticket_id = str('tick') + str(current_id_num)
         event_id = input('Enter the event ID for new id ticket: ')
         username = input('Enter your name : ')
-        current_date = str(datetime.date.today())
-        current_date = current_date.replace('-', '')
+        event_date_added=str(event_date())
         priority = 0
         ticket = {
             'ticket_id': ticket_id,
             'event_id': event_id,
             'username': username,
-            'date': current_date,
+            'date': event_date_added,
             'priority': priority
         }
 
@@ -263,7 +314,7 @@ def CreateTicket(removed, last_id, tickets, next_id_num, role):
         tickets.append(ticket)
     if role == 'user':  # if the role is user we save changes to file
         with open('events_data.txt', 'a')as t_db:
-            ticket_data = f"{ticket_id},{event_id},{username},{current_date},{priority}\n"
+            ticket_data = f"{ticket_id},{event_id},{username},{event_date_added},{priority}\n"
             t_db.write(ticket_data)
 ############################# - Display Ticket sorted by date - ######################################
 
@@ -274,7 +325,6 @@ def CreateTicket(removed, last_id, tickets, next_id_num, role):
 # today will display today's events
 # #tomorrow will to todays date a 1 since date is concatinated with in and increased days by one which will be the last number
 # upcoming will display all the rest evetns
-
 
 def DisplayByDate(tickets):  # O(N) since independent For loops
     current_date = str(datetime.date.today())
@@ -326,7 +376,7 @@ def ChangePriority(tickets):  # O(N) // 2 dependent loops O(N) each
 
 # the following functiion delete a ticket user chooses through entering id
 
-def DeleteTicket(tickets):  # O(N) 1 loop
+def DeleteTicket(tickets):  # O(logN) binary search
     # inializing a removed ticket variable as none to make it equal ticket if removed
     removed_ticket = None
     id_to_delete = input('Enter a valid ticket ID to delete: ')
@@ -344,31 +394,15 @@ def DeleteTicket(tickets):  # O(N) 1 loop
     else:
         print(f"User '{id_to_delete}' not found.")
 
-    # for ticket in tickets:
-    #     # if id is found removed_ticket will be equal to removed ticket and not None anymore
-    #     if ticket['ticket_id'] == id_to_delete:
-    #         removed_ticket = ticket
-    #         # we remove the ticket from tickets list then we break since ids are unique no need to continue looping around
-    #         tickets.remove(ticket)
-    #         break
-    # if removed_ticket:  # check if removed_tickets is None. if It is not equal to None we remove the id from the tickets_id and we append it to the deleted_id to use for next ticket booking
-
-    #     deleted_id.append(str(id_to_delete))
-    #     print('The following ticket has been removed:', removed_ticket)
-    #     return True
-    # else:  # remoevd_ticket is None we return id not found
-    #     print('ID not found in the list')
-    #     return False
 
 ############################ - Run Events - ####################################
 
 
 def RunEvents(sorted_by_priority, tickets):  # O(N)
 
-    current_date = str(datetime.date.today())
-    current_date = current_date.replace('-', '')  # Saving current date
+    today_date=current_date()
     for ticket in sorted_by_priority:  # iterating throught the priority sorted list of tickets recieved from main
-        if ticket['date'] == current_date:
+        if ticket['date'] == str(today_date):
             # if date is equal to current date we print this ticcket then we remove it from tickets list
             print('\n\nthis ticket is running today and will be removed : ', ticket)
             tickets.remove(ticket)
