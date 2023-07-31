@@ -32,41 +32,9 @@ def check_integer_input(number):  # O(N)
         except ValueError:  # if user didn't enter an integer,ValueError will thrown,ValueError is a type which will check the value if integer in this case,if it is not it will thow the invalid input message in this case
             print("Invalid input. Please enter an integer.")
 
-# ------------------------------------------------Merge Sort Algorithms Section----------------------------------------------------------------------------------------------------------------------#
-################# - merge sort for sorting ID - ################
+# ------------------------------------------------Merge Sort Algorithm Section----------------------------------------------------------------------------------------------------------------------#
 
-
-def sort_id(tickets):
-    if len(tickets) <= 1:
-        return tickets
-
-    mid = len(tickets) // 2
-    left_half_id = tickets[:mid]
-    right_half_id = tickets[mid:]
-
-    left_half_id = sort_id(left_half_id)
-    right_half_id = sort_id(right_half_id)
-
-    return sort_merge_id(left_half_id, right_half_id)
-
-
-def sort_merge_id(left, right):
-    merged_list_id = []
-    left_index_id, right_index_id = 0, 0
-
-    while left_index_id < len(left) and right_index_id < len(right):
-        if left[left_index_id]["ticket_id"] < right[right_index_id]["ticket_id"]:
-            merged_list_id.append(left[left_index_id])
-            left_index_id += 1
-        else:
-            merged_list_id.append(right[right_index_id])
-            right_index_id += 1
-
-    merged_list_id.extend(left[left_index_id:])
-    merged_list_id.extend(right[right_index_id:])
-    return merged_list_id
-
-################### - Merge Sort for date and priority - #####################
+################### - Merge Sort for id, date and priority - #####################
 
 
 def merge_sort(arr, option):
@@ -88,15 +56,23 @@ def merge(left, right, option):
     left_idx, right_idx = 0, 0
 
     while left_idx < len(left) and right_idx < len(right):
-        left_side = int(left[left_idx][option])
-        right_side = int(right[right_idx][option])
-
-        if left_side <= right_side:
-            merged_list.append(left[left_idx])
-            left_idx += 1
+        if option == 'ticket_id':
+            if left[left_idx]["ticket_id"] < right[right_idx]["ticket_id"]:
+                merged_list.append(left[left_idx])
+                left_idx += 1
+            else:
+                merged_list.append(right[right_idx])
+                right_idx += 1
         else:
-            merged_list.append(right[right_idx])
-            right_idx += 1
+            left_side = int(left[left_idx][option])
+            right_side = int(right[right_idx][option])
+
+            if left_side <= right_side:
+                merged_list.append(left[left_idx])
+                left_idx += 1
+            else:
+                merged_list.append(right[right_idx])
+                right_idx += 1
 
     merged_list.extend(left[left_idx:])
     merged_list.extend(right[right_idx:])
@@ -136,21 +112,6 @@ def UploadTickets(tickets):  # TIME COMPLEXITY : O(N) // since open() returns a 
             tickets.append(ticket)
 
 
-############################# - Add Ids to a list - #########################################
-# The following function will alse open the file storing the data and gets only the first index after splitting using the comma delimiter which is the ticcket ID
-# Then the ids will be stored in a global list defined in the main called tickets_id
-# This list is used to handle the next ticket ID that will be added to the system,so this list will handle the already used ids
-
-def GetTicketsId():#O(N) // since it holds a for loop
-    with open('events_data.txt', 'r') as file:
-        for line in file:
-            ticket_data = line.strip().split(',')
-            if len(ticket_data) < 5:
-                continue
-            tickets_id.append(ticket_data[0])
-        return tickets_id
-
-
 ########################## -  Get Last Id - ############################
 # The following function will get the last id of the tickets , bby this we handled that the next ticket to be added will have the (oldId +1) since ID is auto incrementing
 # removed in parameters is a boolean inialized in the main function and used when a ticket is deleted.
@@ -162,53 +123,64 @@ def GetTicketsId():#O(N) // since it holds a for loop
 def GetLastId(removed, tickets):  # O(N) // ALL of the function is using constants and we have else
     # in the case that we have a deleted ticket before , we handle its ID
     if removed == True and len(deleted_id) != 0:
-        next_id = deleted_id[0]              # next_id is the id that will be added next to the net ticket will be equal to the fist index of the deleted_id list
+        # next_id is the id that will be added next to the net ticket will be equal to the fist index of the deleted_id list
+        next_id = deleted_id[0]
 
-        deleted_id.remove(deleted_id[0])     # The taken id which is in the first index then is removed from the deleted_id list to prevent duplication
+        # The taken id which is in the first index then is removed from the deleted_id list to prevent duplication
+        deleted_id.remove(deleted_id[0])
 
-        next_ticket_id = int(next_id[4:])    # The tickets id pattern is as dollows: tick100 , tick101, tick103,.. etc so in this line im taking a substring where
-                                             # i remove the 'tick' part and store the number after it as an integer using concatination
+        # The tickets id pattern is as dollows: tick100 , tick101, tick103,.. etc so in this line im taking a substring where
+        next_ticket_id = int(next_id[4:])
+        # i remove the 'tick' part and store the number after it as an integer using concatination
 
         return next_ticket_id
-    
-    else:                            # this is the case where no deleted ids are found in the deleted id list 
-        last_index = len(tickets)-1  #we get the last index of the tickets list which will be golding the last ticket id we have
 
-        last_ticket_id = tickets[last_index]['ticket_id'] #We get the ticket ID of the last ticket 
+    else:                            # this is the case where no deleted ids are found in the deleted id list
+        # we get the last index of the tickets list which will be golding the last ticket id we have
+        last_index = len(tickets)-1
 
-        last_ticket_id = int(last_ticket_id[4:])    # The tickets id pattern is as dollows: tick100 , tick101, tick103,.. etc so in this line im taking a substring where
-                                                    # i remove the 'tick' part and store the number after it as an integer using concatination
+        # We get the ticket ID of the last ticket
+        last_ticket_id = tickets[last_index]['ticket_id']
+
+        # The tickets id pattern is as dollows: tick100 , tick101, tick103,.. etc so in this line im taking a substring where
+        last_ticket_id = int(last_ticket_id[4:])
+        # i remove the 'tick' part and store the number after it as an integer using concatination
 
         return last_ticket_id
 
 
-# -----------------------------------------------------------Choices chosen functions Section-----------------------------------------------------------------------------------------#
+# -----------------------------         --------------------Choices chosen functions Section---------------                 --------------------------#
 
-# The following function is for the first choice to display the event with the highest tickets 
+# The following function is for the first choice to display the event with the highest tickets
 # To do so i inialized a dictionary named even_dict where take the even Ids from the tickets list in parameter as a key to the values
-#and the values will be the tickets for each event 
-#then to each event id which is the key , we count the number of values which are the tickets for this event
-#the event that has the highest number of values will be the highest event that has the highest number of tickets
+# and the values will be the tickets for each event
+# then to each event id which is the key , we count the number of values which are the tickets for this event
+# the event that has the highest number of values will be the highest event that has the highest number of tickets
 
-def HighestTicketsNum(tickets): # O(n^2) is the worst case since we have 2 nested dependent loops
+# O(n^2) is the worst case since we have 2 nested dependent loops
+def HighestTicketsNum(tickets):
     event_dict = {}
 
-    for ticket in tickets:                    #first for loop is to enter a list of dictionaries named tickets that is passed to the function through parameter
-        event_id = ticket["event_id"]         # inside this list each dictionary will have an event id(ticker['event_id']) which will be stored in event_id
-        ticket_info = {}                      #a dictionary to save the ticekt info except for event_id to be added to its corresponding event id key
-        for key, value in ticket.items():     #iterating through each item in dict found in the tickets list
-            if key != "event_id":             #if the key is not =  to 'event_id' we append the key and value to the ticket_info dict
+    for ticket in tickets:  # first for loop is to enter a list of dictionaries named tickets that is passed to the function through parameter
+        # inside this list each dictionary will have an event id(ticker['event_id']) which will be stored in event_id
+        event_id = ticket["event_id"]
+        ticket_info = {}  # a dictionary to save the ticekt info except for event_id to be added to its corresponding event id key
+        for key, value in ticket.items():  # iterating through each item in dict found in the tickets list
+            if key != "event_id":  # if the key is not =  to 'event_id' we append the key and value to the ticket_info dict
                 ticket_info[key] = value
 
-        if event_id in event_dict:                          #if event id is already found in even_dictt we append the value(which is the ticket info) to the same eventId
+        # if event id is already found in even_dictt we append the value(which is the ticket info) to the same eventId
+        if event_id in event_dict:
             event_dict[event_id].append(ticket_info)
         else:
-            event_dict[event_id] = [ticket_info]            #if event id is not found in event_dict we append a ney key holding event_id with its value in ticket_info
+            # if event id is not found in event_dict we append a ney key holding event_id with its value in ticket_info
+            event_dict[event_id] = [ticket_info]
 
-    highest = 0 
+    highest = 0
     highest_key = ''
-    for key, value in event_dict.items():                   #in this part we iterate events dict and see which event has the highest number of tickets as id and we store the number
-        if len(value) > highest:                            # of values in highest variable and print the key of event which is the id of it and the number of tickets 
+    for key, value in event_dict.items():  # in this part we iterate events dict and see which event has the highest number of tickets as id and we store the number
+        # of values in highest variable and print the key of event which is the id of it and the number of tickets
+        if len(value) > highest:
             highest = len(value)
             highest_key = key
     return f'Event {highest_key} has the highest number of tickets {highest}'
@@ -216,25 +188,29 @@ def HighestTicketsNum(tickets): # O(n^2) is the worst case since we have 2 neste
 
 ########################## - Create Ticket - ###############################
 
-#the following function is to create a new ticket as booking a ticket 
-#removed to check if there is any removed id before to reuse it again as discussed in above functions 
-#if no removed ids we take the last id in the tickets list and increment it by 1
-#if removed true , the deleted id will e passed from main as parameter and stored in next_id_num
-#role is to check for user changes to save, if admin nothing will be saved
+# the following function is to create a new ticket as booking a ticket
+# removed to check if there is any removed id before to reuse it again as discussed in above functions
+# if no removed ids we take the last id in the tickets list and increment it by 1
+# if removed true , the deleted id will e passed from main as parameter and stored in next_id_num
+# role is to check for user changes to save, if admin nothing will be saved
 
-def CreateTicket(removed, last_id, tickets, next_id_num, role):#O(NlgN) // since we have merge sort called
+# O(NlgN) // since we have merge sort called
+def CreateTicket(removed, last_id, tickets, next_id_num, role):
 
-    if removed == True and next_id_num != 0:        #case of deleted id 
+    if removed == True and next_id_num != 0:  # case of deleted id
 
-        current_id_num = next_id_num                #if nextid is greater than 0 we store it in current_id_num
+        # if nextid is greater than 0 we store it in current_id_num
+        current_id_num = next_id_num
 
-        ticket_id = str('tick') + str(current_id_num)                       #we add 'tick' before number then add the number of id concatenated wih str
-        event_id = input('Enter the event ID with deleted before id: ')     #user will fill the data here
+        # we add 'tick' before number then add the number of id concatenated wih str
+        ticket_id = str('tick') + str(current_id_num)
+        # user will fill the data here
+        event_id = input('Enter the event ID with deleted before id: ')
         username = input('Enter your name : ')
         current_date = str(datetime.date.today())
         current_date = current_date.replace('-', '')
         priority = 0
-        ticket = {                                                          #data added above will be stored in a ticket dictionary that will be appended after to list tickets
+        ticket = {  # data added above will be stored in a ticket dictionary that will be appended after to list tickets
             'ticket_id': ticket_id,
             'event_id': event_id,
             'username': username,
@@ -242,13 +218,16 @@ def CreateTicket(removed, last_id, tickets, next_id_num, role):#O(NlgN) // since
             'priority': priority
         }
         tickets.append(ticket)
-        sort_id(tickets)#O(NlgN)                                                    #calling sort_id nerge sort to sort tickets by IDs
-        tickets_id.append(ticket['ticket_id'])                              #appending the new id added to the tickets_id, discuused the use of this list before
+        # O(NlgN)                                                    #calling sort_id nerge sort to sort tickets by IDs
+        merge_sort(tickets, 'ticket_id')
+        # appending the new id added to the tickets_id, discuused the use of this list before
         print('Following ticket is added : ', ticket)
-    else:                                                                   #the case where no deleted id is found
-        current_id_num = last_id + 1                                        # we take the last id found past from getlastid function and increment it by 1
-        ticket_id = str('tick') + str(current_id_num)                       #rest is same as discussed above
-        event_id = input('Enter the event ID for new id ticket: ')  
+    else:  # the case where no deleted id is found
+        # we take the last id found past from getlastid function and increment it by 1
+        current_id_num = last_id + 1
+        # rest is same as discussed above
+        ticket_id = str('tick') + str(current_id_num)
+        event_id = input('Enter the event ID for new id ticket: ')
         username = input('Enter your name : ')
         current_date = str(datetime.date.today())
         current_date = current_date.replace('-', '')
@@ -260,33 +239,37 @@ def CreateTicket(removed, last_id, tickets, next_id_num, role):#O(NlgN) // since
             'date': current_date,
             'priority': priority
         }
-        tickets_id.append(ticket['ticket_id'])
+
         print('Following ticket is added : ', ticket)
         tickets.append(ticket)
-    if role == 'user':                                                      #if the role is user we save changes to file
+    if role == 'user':  # if the role is user we save changes to file
         with open('events_data.txt', 'a')as t_db:
             ticket_data = f"{ticket_id},{event_id},{username},{current_date},{priority}\n"
             t_db.write(ticket_data)
 ############################# - Display Ticket sorted by date - ######################################
 
 
-#this function will display the tickets sorted by date using the merge sort 
-#it takes tixkets only as parameter
-#checks for the date if in 3 cases : Today , Tomorrow and upcoming
-#today will display today's events 
+# this function will display the tickets sorted by date using the merge sort
+# it takes tixkets only as parameter
+# checks for the date if in 3 cases : Today , Tomorrow and upcoming
+# today will display today's events
 # #tomorrow will to todays date a 1 since date is concatinated with in and increased days by one which will be the last number
-#upcoming will display all the rest evetns
+# upcoming will display all the rest evetns
 
 
-def DisplayByDate(tickets):#O(N) since independent For loops
+def DisplayByDate(tickets):  # O(N) since independent For loops
     current_date = str(datetime.date.today())
-    current_date = current_date.replace('-', '')       #get current date which is today's date
-    sorted_tickets = merge_sort(tickets, 'date')       #sort tickets by date(note the second parameter 'date' sent is for merge sort's option) trying to make  it moregeneral and reusable in case of soring by priority
-    print('\nEvents of today\'s date :\n')             
-    for ticket in sorted_tickets:                           #in each of upcoming parts in this function we are iterating through tickets to display them accorfing to there dates
+    # get current date which is today's date
+    current_date = current_date.replace('-', '')
+    # sort tickets by date(note the second parameter 'date' sent is for merge sort's option) trying to make  it moregeneral and reusable in case of soring by priority
+    sorted_tickets = merge_sort(tickets, 'date')
+    print('\nEvents of today\'s date :\n')
+    for ticket in sorted_tickets:  # in each of upcoming parts in this function we are iterating through tickets to display them accorfing to there dates
         if ticket['date'] == current_date:
-            if ticket['ticket_id'] not in deleted_id:       #checking if ticket is not deleted as a douible check then checking what is the date is equal to(current,tomorrow or upcoming)
-                print(ticket)                               # before printing it
+            # checking if ticket is not deleted as a douible check then checking what is the date is equal to(current,tomorrow or upcoming)
+            if ticket['ticket_id'] not in deleted_id:
+                # before printing it
+                print(ticket)
 
     tomorrow_date = int(current_date)+1
 
@@ -296,23 +279,27 @@ def DisplayByDate(tickets):#O(N) since independent For loops
             print(ticket)
     print('\nUpcoming Events :\n')
     for ticket in sorted_tickets:
-        if ticket['date'] > current_date and ticket['date'] != str(tomorrow_date):  #if the date is not current nor equal to tomorrow print upcoming 
+        # if the date is not current nor equal to tomorrow print upcoming
+        if ticket['date'] > current_date and ticket['date'] != str(tomorrow_date):
             print(ticket)
 
 #################################### - Change ticket priority - ##################################
-#following function changes the priority of a ticket by iterating through tickets list and asking the user to enter the desired ticket id he wants to change its priority
-#the we check through a loop if the id of this ticket is found then the ticket is found
-#then the user is asked to enter the new priority which will be updated though accessing it where the key is priority
+# following function changes the priority of a ticket by iterating through tickets list and asking the user to enter the desired ticket id he wants to change its priority
+# the we check through a loop if the id of this ticket is found then the ticket is found
+# then the user is asked to enter the new priority which will be updated though accessing it where the key is priority
 
 
-def ChangePriority(tickets):#O(N) // 2 dependent loops O(N) each
-    ticket_id_to_change = input('Enter ticket ID : ') # Using check_integer_input to echeck for user input              
+def ChangePriority(tickets):  # O(N) // 2 dependent loops O(N) each
+    # Using check_integer_input to echeck for user input
+    ticket_id_to_change = input('Enter ticket ID : ')
     for ticket in tickets:
         if ticket['ticket_id'] == ticket_id_to_change:
-            desired_priority = check_integer_input('Enter the priority to update it : ') 
-            ticket['priority'] = desired_priority           #setting the new priority when the id matches the user id input
+            desired_priority = check_integer_input(
+                'Enter the priority to update it : ')
+            # setting the new priority when the id matches the user id input
+            ticket['priority'] = desired_priority
             return print(ticket)
-        
+
     else:
         return print(f"\nTicket ID '{ticket_id_to_change}' you entered is not found.\n")
 ####################################### - delete ticket by id - ######################################
@@ -320,56 +307,56 @@ def ChangePriority(tickets):#O(N) // 2 dependent loops O(N) each
 
 # the following functiion delete a ticket user chooses through entering id
 
-def DeleteTicket(tickets):#O(N) 1 loop
-    removed_ticket = None    #inializing a removed ticket variable as none to make it equal ticket if removed 
-    id_to_delete = input('Enter a valid ticket ID to delete: ')         
+def DeleteTicket(tickets):  # O(N) 1 loop
+    # inializing a removed ticket variable as none to make it equal ticket if removed
+    removed_ticket = None
+    id_to_delete = input('Enter a valid ticket ID to delete: ')
     for ticket in tickets:
-        if ticket['ticket_id'] == id_to_delete:  #if id is found removed_ticket will be equal to removed ticket and not None anymore
+        # if id is found removed_ticket will be equal to removed ticket and not None anymore
+        if ticket['ticket_id'] == id_to_delete:
             removed_ticket = ticket
-            tickets.remove(ticket)     #we remove the ticket from tickets list then we break since ids are unique no need to continue looping around
+            # we remove the ticket from tickets list then we break since ids are unique no need to continue looping around
+            tickets.remove(ticket)
             break
-    if removed_ticket:   #check if removed_tickets is None. if It is not equal to None we remove the id from the tickets_id and we append it to the deleted_id to use for next ticket booking
-        tickets_id.remove(id_to_delete)
+    if removed_ticket:  # check if removed_tickets is None. if It is not equal to None we remove the id from the tickets_id and we append it to the deleted_id to use for next ticket booking
+
         deleted_id.append(str(id_to_delete))
         print('The following ticket has been removed:', removed_ticket)
         return True
-    else:                                                   #remoevd_ticket is None we return id not found
+    else:  # remoevd_ticket is None we return id not found
         print('ID not found in the list')
         return False
 
 ############################ - Run Events - ####################################
 
-#to be edited 
-def RunEvents(sorted_by_priority,tickets):
-   
-    current_date = str(datetime.date.today())
-    current_date = current_date.replace('-','')
-    size=len(sorted_by_priority)-1
 
-    for ticket in sorted_by_priority:
+def RunEvents(sorted_by_priority, tickets):  # O(N)
+
+    current_date = str(datetime.date.today())
+    current_date = current_date.replace('-', '')  # Saving current date
+    for ticket in sorted_by_priority:  # iterating throught the priority sorted list of tickets recieved from main
         if ticket['date'] == current_date:
+            # if date is equal to current date we print this ticcket then we remove it from tickets list
             print('\n\nthis ticket is running today and will be removed : ', ticket)
             tickets.remove(ticket)
+            # removed id will be added to deleted id , to handle the next id added
             deleted_id.append(ticket['ticket_id'])
-            deleted_id.sort()
-            tickets_id.remove(ticket['ticket_id'])
+            # removed from tickets id
 
     return tickets
 
 
-# ---------------------------------------------------------------------------------------------------#
+# -----------------------------------------------           Main Function                ----------------------------------------------------#
 def main():
     removed = False
-    next_id = None
     attempts = 5
     tickets = []
     global deleted_id
     deleted_id = []
-    global tickets_id
-    tickets_id = []
+
     UploadTickets(tickets)
-    tickets = sort_id(tickets)
-    GetTicketsId()
+    tickets = merge_sort(tickets, 'ticket_id')
+
     choice = 0
     print('\n\nWelcome to our Events ticketing system !\nplease enter your username and password to enter as an admin,\nelse just proceed with an empty values if user :')
     while attempts > 0:
@@ -413,16 +400,16 @@ def main():
                                          tickets, deleted_id, role)
 
                         else:
+                            deleted_id.sort()  # O(NlgN)
                             removed = True
                             temp = None
                             next_id_num = GetLastId(
                                 removed, tickets)
                             print('this is next id num : ', next_id_num)
-                            CreateTicket(removed, temp, tickets,next_id_num, role)
+                            CreateTicket(removed, temp, tickets,
+                                         next_id_num, role)
                             removed = False
-                            tickets = sort_id(tickets)
-
-                         
+                            tickets = merge_sort(tickets, 'ticket_id')
 
                     case 3:
 
@@ -433,12 +420,11 @@ def main():
 
                     case 5:
                         removed = DeleteTicket(tickets)
-                        deleted_id.sort()
+
                     case 6:
                         sorted_by_priority = merge_sort(tickets, 'priority')
                         sorted_by_priority.reverse()
-                        tickets = RunEvents(sorted_by_priority,tickets)
-
+                        tickets = RunEvents(sorted_by_priority, tickets)
 
             else:
                 print('\n Choice should be between 1 and 7 ')
