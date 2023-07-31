@@ -42,9 +42,9 @@ def binary_search_by_id(tickets, target_id):
 
     while left <= right:
         mid = (right+left) // 2
-        mid_id = tickets[mid]['ticket_id']
+        mid_id = tickets[mid]['ticket_id']                  # Here we save the mid ticket id in mid_id variable ,example if mid is 5 : tickets[5]['ticket_id']
 
-        if mid_id == target_id:
+        if mid_id == target_id:                                 
             return mid
         elif mid_id < target_id:
             left = mid + 1
@@ -72,29 +72,29 @@ def merge_sort(arr, option):
 
 def merge(left, right, option):
     merged_list = []
-    left_idx, right_idx = 0, 0
+    left_index, right_index = 0, 0
 
-    while left_idx < len(left) and right_idx < len(right):
+    while left_index < len(left) and right_index < len(right):
         if option == 'ticket_id':
-            if left[left_idx]["ticket_id"] < right[right_idx]["ticket_id"]:
-                merged_list.append(left[left_idx])
-                left_idx += 1
+            if left[left_index]["ticket_id"] < right[right_index]["ticket_id"]:        # herre we compare ids between left and right parts if oprion is ticket_id
+                merged_list.append(left[left_index])                                 #if left is smaller we append it to the merged list and we increment left by 1
+                left_index += 1
             else:
-                merged_list.append(right[right_idx])
-                right_idx += 1
+                merged_list.append(right[right_index])                                #else right id is appended to the merged list
+                right_index += 1                                                      #we increment then right by 1
         else:
-            left_side = int(left[left_idx][option])
-            right_side = int(right[right_idx][option])
+            left_side = int(left[left_index][option])                                 # Any other option will do same but it cannot accpet a 'ticket_id' as an option to be passed 
+            right_side = int(right[right_index][option])                               # so i had to make it as if and else 
 
             if left_side <= right_side:
-                merged_list.append(left[left_idx])
-                left_idx += 1
+                merged_list.append(left[left_index])
+                left_index += 1
             else:
-                merged_list.append(right[right_idx])
-                right_idx += 1
+                merged_list.append(right[right_index])
+                right_index += 1
 
-    merged_list.extend(left[left_idx:])
-    merged_list.extend(right[right_idx:])
+    merged_list.extend(left[left_index:])
+    merged_list.extend(right[right_index:])
 
     return merged_list
 
@@ -168,12 +168,18 @@ def GetLastId(removed, tickets):  # O(N) // ALL of the function is using constan
         return last_ticket_id
 # -----------------------------         --------------------Date Section---------------                 --------------------------#
 ############ -  get the date of today - ##########
+
+# the following function displays the current date 
+
 def current_date():
     current_date = str(datetime.date.today())
     current_date = int(current_date.replace('-', ''))
     return current_date
 
 ############ -  user datew input + validity check - ##########
+
+#this function asks user to input a valid date and displays an error in invalid copied from older assignment and edited to fit this test case
+
 def event_date():
     today_date = current_date()
 
@@ -201,11 +207,11 @@ def event_date():
                     "Invalid date format! Please enter the date in the format DD-MM-YYYY.")
 
             # Assure that the day, month, and year are within valid ranges
-            elif int(day) > 1 and int(day) <= 31 and int(month) > 1 and int(month) <= 12 and int(year) >= 2023:
+            elif int(day) > 1 and int(day) <= 31 and int(month) > 1 and int(month) <= 12 and int(year) >= 2023:  #we check for validity 
 
                 date = date.replace('/', '')
                 date = int(date)
-                if date < today_date:
+                if date < today_date:                                                               #check if the date is earlier than the current day we are in
                     print(f'this the date added ,  {date}')
                     print(f'this is the current date {today_date}')
                     print('Invalid date you can\'t reserve an event that passed before')
@@ -374,9 +380,9 @@ def ChangePriority(tickets):  # O(N) // 2 dependent loops O(N) each
 ####################################### - delete ticket by id - ######################################
 
 
-# the following functiion delete a ticket user chooses through entering id
+# the following functiion delete a ticket user chooses through entering id searching for it using binary search then removing it from list
 
-def DeleteTicket(tickets):  # O(logN) binary search
+def DeleteTicket(tickets):  # O(N) since it has .remove
     # inializing a removed ticket variable as none to make it equal ticket if removed
     removed_ticket = None
     id_to_delete = input('Enter a valid ticket ID to delete: ')
@@ -398,7 +404,7 @@ def DeleteTicket(tickets):  # O(logN) binary search
 ############################ - Run Events - ####################################
 
 
-def RunEvents(sorted_by_priority, tickets):  # O(N)
+def RunEvents(sorted_by_priority, tickets):  # O(N) handles a for loop
 
     today_date=current_date()
     for ticket in sorted_by_priority:  # iterating throught the priority sorted list of tickets recieved from main
@@ -415,17 +421,20 @@ def RunEvents(sorted_by_priority, tickets):  # O(N)
 
 # -----------------------------------------------           Main Function                ----------------------------------------------------#
 def main():
-    removed = False
+    removed = False #if an id is deleted removed will be true to use the deleted index as next id 
     attempts = 5
-    tickets = []
+    tickets = [] #store all tickets we have 
     global deleted_id
-    deleted_id = []
+    deleted_id = []   #store deleted ids to handle ticket ids if deleted
 
-    UploadTickets(tickets)
-    tickets = merge_sort(tickets, 'ticket_id')
+    UploadTickets(tickets)      # Uploading tickets from file to list 
 
+    tickets = merge_sort(tickets, 'ticket_id') # sorting list using merge sort
+
+    #using match case where it accetps choice to check what is the user choice
     choice = 0
     print('\n\nWelcome to our Events ticketing system !\nplease enter your username and password to enter as an admin,\nelse just proceed with an empty values if user :')
+    #checking for user attempts and role
     while attempts > 0:
         username = input('\n\nEnter your admin username : ')
         password = input(
@@ -458,25 +467,29 @@ def main():
 
                         print(HighestTicketsNum(tickets))
                     case 2:
+                        #in this case if we don't found a delegted id before added to deleted_id list we enter the id 
+                        # and book a ticket that will increment the last id we have in list, in this case removed is False
+                        if len(deleted_id) == 0:     
 
-                        if len(deleted_id) == 0:
-
-                            last_id = GetLastId(removed, tickets)
+                            last_id = GetLastId(removed, tickets) # we get the last id in tickets list and store in last_id using function 
 
                             CreateTicket(removed, last_id,
-                                         tickets, deleted_id, role)
+                                         tickets, deleted_id, role)     #we create then by sending the following parameters 
+                        # if removed is true then we the deleted_id to get the last id and user 
+                        #if role is admin we exir without saving else if user we save
 
                         else:
+                            #case where we have a deleted id , we sort the deleted_id list to keep the sequence 
+                            #removed is set True to enter the id condition in the create Ticket  
                             deleted_id.sort()  # O(NlgN)
                             removed = True
-                            temp = None
-                            next_id_num = GetLastId(
-                                removed, tickets)
+                            temp = None                     #this temp is to send it to parameter instead of last_id since we didn't inialize it at this state
+                            next_id_num = GetLastId(removed, tickets) #since removed is true so the GetLastId will be the lowest id found in deleted id list 
+
                             print('this is next id num : ', next_id_num)
-                            CreateTicket(removed, temp, tickets,
-                                         next_id_num, role)
-                            removed = False
-                            tickets = merge_sort(tickets, 'ticket_id')
+                            CreateTicket(removed, temp, tickets,next_id_num, role)
+                            removed = False #after finising removed set back to False to avoid mistakes
+                            tickets = merge_sort(tickets, 'ticket_id') #sotirng tickets by id using merge sort 
 
                     case 3:
 
@@ -489,14 +502,17 @@ def main():
                         removed = DeleteTicket(tickets)
 
                     case 6:
-                        sorted_by_priority = merge_sort(tickets, 'priority')
-                        sorted_by_priority.reverse()
-                        tickets = RunEvents(sorted_by_priority, tickets)
+                        sorted_by_priority = merge_sort(tickets, 'priority')  #sort tickets by priority using merge sort
+                        sorted_by_priority.reverse()  # reversing the ticket which will have the highest first since they have the bigger chance to attend event
+                        tickets = RunEvents(sorted_by_priority, tickets)  # RunEvents the sorted by priority list and the lsit of ticket to remove events that run
 
             else:
                 print('\n Choice should be between 1 and 7 ')
 
     else:
+        
+        # in case of user he'll be able to book a ticket same as admin , but since the in parameter is user then the txt file will update and ticket in it
+
         print('Signed in as User')
         role = 'user'
         while choice != 2:
