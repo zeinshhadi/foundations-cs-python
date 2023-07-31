@@ -32,7 +32,26 @@ def check_integer_input(number):  # O(N)
         except ValueError:  # if user didn't enter an integer,ValueError will thrown,ValueError is a type which will check the value if integer in this case,if it is not it will thow the invalid input message in this case
             print("Invalid input. Please enter an integer.")
 
-# ------------------------------------------------Merge Sort Algorithm Section----------------------------------------------------------------------------------------------------------------------#
+# ------------------------------------------------Algorithms Section----------------------------------------------------------------------------------------------------------------------#
+
+################### - Binary Search Sort for id of ticket - #####################
+
+def binary_search_by_id(tickets, target_id):
+    left = 0
+    right = len(tickets) - 1
+
+    while left <= right:
+        mid = left + (right - left) // 2
+        mid_id = tickets[mid]['ticket_id']
+
+        if mid_id == target_id:
+            return mid
+        elif mid_id < target_id:
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return -1
 
 ################### - Merge Sort for id, date and priority - #####################
 
@@ -311,21 +330,35 @@ def DeleteTicket(tickets):  # O(N) 1 loop
     # inializing a removed ticket variable as none to make it equal ticket if removed
     removed_ticket = None
     id_to_delete = input('Enter a valid ticket ID to delete: ')
-    for ticket in tickets:
-        # if id is found removed_ticket will be equal to removed ticket and not None anymore
-        if ticket['ticket_id'] == id_to_delete:
-            removed_ticket = ticket
-            # we remove the ticket from tickets list then we break since ids are unique no need to continue looping around
-            tickets.remove(ticket)
-            break
-    if removed_ticket:  # check if removed_tickets is None. if It is not equal to None we remove the id from the tickets_id and we append it to the deleted_id to use for next ticket booking
+    ticket_index = binary_search_by_id(tickets, id_to_delete)
 
-        deleted_id.append(str(id_to_delete))
-        print('The following ticket has been removed:', removed_ticket)
-        return True
-    else:  # remoevd_ticket is None we return id not found
-        print('ID not found in the list')
-        return False
+    if ticket_index != -1:
+        removed_ticket = tickets[ticket_index]
+
+        tickets.remove(removed_ticket)
+        if removed_ticket:
+            deleted_id.append(id_to_delete)
+            print('this the ticket to be deleted', tickets[ticket_index])
+            return True
+
+    else:
+        print(f"User '{id_to_delete}' not found.")
+
+    # for ticket in tickets:
+    #     # if id is found removed_ticket will be equal to removed ticket and not None anymore
+    #     if ticket['ticket_id'] == id_to_delete:
+    #         removed_ticket = ticket
+    #         # we remove the ticket from tickets list then we break since ids are unique no need to continue looping around
+    #         tickets.remove(ticket)
+    #         break
+    # if removed_ticket:  # check if removed_tickets is None. if It is not equal to None we remove the id from the tickets_id and we append it to the deleted_id to use for next ticket booking
+
+    #     deleted_id.append(str(id_to_delete))
+    #     print('The following ticket has been removed:', removed_ticket)
+    #     return True
+    # else:  # remoevd_ticket is None we return id not found
+    #     print('ID not found in the list')
+    #     return False
 
 ############################ - Run Events - ####################################
 
