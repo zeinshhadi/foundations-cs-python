@@ -36,7 +36,7 @@ def check_integer_input(number):  # O(N)
 
 ################### - Binary Search Sort for id of ticket - #####################
 
-def binary_search_by_id(tickets, target_id):
+def binary_search_by_id(tickets, target_id):#O(logN)
     left = 0
     right = len(tickets) - 1
 
@@ -56,7 +56,7 @@ def binary_search_by_id(tickets, target_id):
 ################### - Merge Sort for id, date and priority - #####################
 
 
-def merge_sort(arr, option):
+def merge_sort(arr, option): #O(NLogN)
     if len(arr) <= 1:
         return arr
 
@@ -171,60 +171,132 @@ def GetLastId(removed, tickets):  # O(N) // ALL of the function is using constan
 
 # the following function displays the current date 
 
-def current_date():
+def current_date():#O(N)
     current_date = str(datetime.date.today())
     current_date = int(current_date.replace('-', ''))
     return current_date
+
+######################### - Tomorrow date function - ########################
+# the following function is built to handle the next day events
+#i built to make sure that every end of year we will have a new year
+#I should have used the datetime python library to make it mote clear but im already late to do it 
+#since i've done it before using auto adding date and i thought i would face no problem using an old code which did not happen
+#this function takes today date as parameter and hold all possible values that would in the next day
+#since each date has max of 8 digits i used substring to split my date and converting this substring to integer using concatination
+#then incrementing what should increased to meet next day's date
+# finally i concatenate it back to string , and adding variables of strings together to for, a date 
+
+def GetTomorrowDate(today_date):
+    # new year condition ex :2023-12-31
+    if today_date[4:6] == '12' and today_date[6:] == '31':
+        next_year = int(today_date[:4]) + 1
+        next_year = str(next_year)
+        first_day = '01'
+        first_month = '01'
+        today_date = next_year + first_month + first_day
+
+        return today_date
+    #  ex :2023-11-31,2023-10-31,2023-12-31
+    elif today_date[4:6] <= '12' and today_date[4:6] >= '09' and today_date[6:] == '31':
+      
+        next_day = '01'
+
+        next_month = int(today_date[4:6])+1
+        next_month = str(next_month)
+      
+
+        today_date = today_date[:4] + next_month + next_day
+
+        return today_date
+    #  ex :2023-01-31,2023-09-31,2023-08-31
+    elif today_date[4:6] < '09' and today_date[6:] == '31':
+       
+        next_month = int(today_date[4:6]) + 1
+        next_month = str(next_month)
+        next_day = '01'
+        today_date = today_date[:4] + '0' + next_month + next_day
+        return today_date
+    #  ex :2023-01-01,2023-08-02,2023-02-09
+    elif today_date[4:6] <= '09' and today_date[6:] < '10':
+       
+        next_month = today_date[6:]
+        # in case of 09 we make next month equals 10 directly to avoid having 010 instead
+        if next_month == '09':
+            next_month = '10'
+            today_date = today_date[:6] + next_month
+        #else we increment the number ( 08+1=9 ) so we add a '0' to the left string 08   
+        else:
+            next_month = int(today_date[6:]) + 1
+            next_month = '0'+str(next_month)
+            today_date = today_date[:6] + next_month
+        return today_date
+     #  ex :2023-11-11,2023-08-22,2023-02-19
+    elif today_date[6:] >= '10' and today_date[6:] < '31':
+      
+        next_day = int(today_date[6:]) + 1
+        next_day = str(next_day)
+        today_date = today_date = today_date[:6] + next_day
+        return today_date
+     #  ex :2023-01-01,2023-08-02,2023-02-09 we add a 0 to left string 
+    elif today_date[6:] < '10':
+
+        next_day = int(today_date[6:]) + 1
+        next_day = '0' + str(next_day)
+        today_date = today_date = today_date[:6] + next_day
+        return today_date
+
+
 
 ############ -  user datew input + validity check - ##########
 
 #this function asks user to input a valid date and displays an error in invalid copied from older assignment and edited to fit this test case
 
-def event_date():
+def event_date(): #O(N)
     today_date = current_date()
-
+    tomorrow_date = GetTomorrowDate(str(today_date))
     dateValidity = False
+
 
     date = ''
     while (dateValidity != True):
-        date = input(
-            'Enter a EVENT DATE formatted as YYYY-MM-DD and starting today\'s date , example (2023-09-08) must conatin 8 digits : ').strip()
+        date = input('Enter a EVENT DATE formatted as YYYY-MM-DD and starting today\'s date , example (2023-09-08) must conatin 8 digits : ').strip()
+        date_test = date.replace('-','')
+        if tomorrow_date == date_test:
+            return tomorrow_date
         frontSlashCount = date.count('/')
         dashCount = date.count('-')
-        if (frontSlashCount == 2 or dashCount
-                == 2):  # Check if user entered complete date with 2 slashes or 2 dashes
+        if (frontSlashCount == 2 or dashCount== 2):  # Check if user entered complete date with 2 slashes or 2 dashes
 
-            date = date.replace('-',
-                                '/')  # replace '-' with '/' if user entered this option
+            date = date.replace('-','/')  # replace '-' with '/' if user entered this option
 
-            year, month, day = date.split(
+            year,month,day = date.split(
                 '/'
             )  # split the date to check if the value of day , month and year are valid and sotre each value to its corresponding variables respectively
-
+            
             if not (day.isdigit() and month.isdigit()
                     and year.isdigit()):  # Assure that the user entered only digits
-                print(
-                    "Invalid date format! Please enter the date in the format DD-MM-YYYY.")
+                print("Invalid date format! Please enter the date in the format DD-MM-YYYY.")
 
             # Assure that the day, month, and year are within valid ranges
             elif int(day) > 1 and int(day) <= 31 and int(month) > 1 and int(month) <= 12 and int(year) >= 2023:  #we check for validity 
-
+               
                 date = date.replace('/', '')
                 date = int(date)
+              
                 if date < today_date:                                                               #check if the date is earlier than the current day we are in
-                    print(f'this the date added ,  {date}')
-                    print(f'this is the current date {today_date}')
                     print('Invalid date you can\'t reserve an event that passed before')
                 else:
-
+                   
                     return date
-
+            
+            
+            
             else:
+                  
                 print("Invalid date format , check the hint to add a valid date ")
         else:
-            print("Invalid date format, check the hint to add a valid date")
+            print("Invalid date format, check the hint to add a valid date ")
             dateValidity = False
-
 
 
 # -----------------------------         --------------------Choices chosen functions Section---------------                 --------------------------#
@@ -235,12 +307,11 @@ def event_date():
 # then to each event id which is the key , we count the number of values which are the tickets for this event
 # the event that has the highest number of values will be the highest event that has the highest number of tickets
 
-# O(n^2) is the worst case since we have 2 nested dependent loops
-def HighestTicketsNum(tickets):
+def HighestTicketsNum(tickets): # O(n^2) is the worst case since we have 2 nested dependent loops
     event_dict = {}
 
     for ticket in tickets:  # first for loop is to enter a list of dictionaries named tickets that is passed to the function through parameter
-        # inside this list each dictionary will have an event id(ticker['event_id']) which will be stored in event_id
+                            # inside this list each dictionary will have an event id(ticker['event_id']) which will be stored in event_id
         event_id = ticket["event_id"]
         ticket_info = {}  # a dictionary to save the ticekt info except for event_id to be added to its corresponding event id key
         for key, value in ticket.items():  # iterating through each item in dict found in the tickets list
@@ -272,12 +343,11 @@ def HighestTicketsNum(tickets):
 # if removed true , the deleted id will e passed from main as parameter and stored in next_id_num
 # role is to check for user changes to save, if admin nothing will be saved
 
-# O(NlgN) // since we have merge sort called
-def CreateTicket(removed, last_id, tickets, next_id_num, role):
+
+def CreateTicket(removed, last_id, tickets, next_id_num, role):# O(NlgN) // since we have merge sort called to sort ids
 
     if removed == True and next_id_num != 0:  # case of deleted id
-
-        # if nextid is greater than 0 we store it in current_id_num
+                                                # if nextid is greater than 0 we store it in current_id_num
         current_id_num = next_id_num
 
         # we add 'tick' before number then add the number of id concatenated wih str
@@ -322,7 +392,7 @@ def CreateTicket(removed, last_id, tickets, next_id_num, role):
         with open('events_data.txt', 'a')as t_db:
             ticket_data = f"{ticket_id},{event_id},{username},{event_date_added},{priority}\n"
             t_db.write(ticket_data)
-############################# - Display Ticket sorted by date - ######################################
+############################# - Display Ticket sorted by date - ####################################
 
 
 # this function will display the tickets sorted by date using the merge sort
@@ -332,7 +402,7 @@ def CreateTicket(removed, last_id, tickets, next_id_num, role):
 # #tomorrow will to todays date a 1 since date is concatinated with in and increased days by one which will be the last number
 # upcoming will display all the rest evetns
 
-def DisplayByDate(tickets):  # O(N) since independent For loops
+def DisplayByDate(tickets):  # O(NlgN) since we have merge sort
     current_date = str(datetime.date.today())
     # get current date which is today's date
     current_date = current_date.replace('-', '')
@@ -346,8 +416,7 @@ def DisplayByDate(tickets):  # O(N) since independent For loops
                 # before printing it
                 print(ticket)
 
-    tomorrow_date = int(current_date)+1
-
+    tomorrow_date = GetTomorrowDate(current_date)
     print('\nEvents of tomorrow\'s date :\n')
     for ticket in sorted_tickets:
         if ticket['date'] == str(tomorrow_date):
@@ -364,7 +433,7 @@ def DisplayByDate(tickets):  # O(N) since independent For loops
 # then the user is asked to enter the new priority which will be updated though accessing it where the key is priority
 
 
-def ChangePriority(tickets):  # O(N) // 2 dependent loops O(N) each
+def ChangePriority(tickets):  # O(N) // 1 loop 
     # Using check_integer_input to echeck for user input
     ticket_id_to_change = input('Enter ticket ID : ')
     for ticket in tickets:
@@ -382,7 +451,7 @@ def ChangePriority(tickets):  # O(N) // 2 dependent loops O(N) each
 
 # the following functiion delete a ticket user chooses through entering id searching for it using binary search then removing it from list
 
-def DeleteTicket(tickets):  # O(N) since it has .remove
+def DeleteTicket(tickets):  # O(NlgN) since it has .remove
     # inializing a removed ticket variable as none to make it equal ticket if removed
     removed_ticket = None
     id_to_delete = input('Enter a valid ticket ID to delete: ')
@@ -394,7 +463,7 @@ def DeleteTicket(tickets):  # O(N) since it has .remove
         tickets.remove(removed_ticket)
         if removed_ticket:
             deleted_id.append(id_to_delete)
-            print('this the ticket to be deleted', tickets[ticket_index])
+            print(f'Ticket of ID {id_to_delete} is successfuly deleted ')
             return True
 
     else:
@@ -420,7 +489,7 @@ def RunEvents(sorted_by_priority, tickets):  # O(N) handles a for loop
 
 
 # -----------------------------------------------           Main Function                ----------------------------------------------------#
-def main():
+def main():#O(n^2) is the worst case when highest ticket is called
     removed = False #if an id is deleted removed will be true to use the deleted index as next id 
     attempts = 5
     tickets = [] #store all tickets we have 
@@ -450,6 +519,7 @@ def main():
         else:
             attempts = 0
             admin = False
+
     if admin == True:
 
         print('Signed in as Admin')
@@ -465,16 +535,17 @@ def main():
                 match choice:
                     case 1:
 
-                        print(HighestTicketsNum(tickets))
+                        print(HighestTicketsNum(tickets)) #O(n^2)
                     case 2:
                         #in this case if we don't found a delegted id before added to deleted_id list we enter the id 
                         # and book a ticket that will increment the last id we have in list, in this case removed is False
                         if len(deleted_id) == 0:     
-
-                            last_id = GetLastId(removed, tickets) # we get the last id in tickets list and store in last_id using function 
+                            # we get the last id in tickets list and store in last_id using function 
+                            last_id = GetLastId(removed, tickets) #O(N)  
+                            
 
                             CreateTicket(removed, last_id,
-                                         tickets, deleted_id, role)     #we create then by sending the following parameters 
+                                         tickets, deleted_id, role) #O(NlgN)    #we create then by sending the following parameters 
                         # if removed is true then we the deleted_id to get the last id and user 
                         #if role is admin we exir without saving else if user we save
 
@@ -493,13 +564,13 @@ def main():
 
                     case 3:
 
-                        DisplayByDate(tickets)
+                        DisplayByDate(tickets)#O(N)
                     case 4:
 
-                        ChangePriority(tickets)
+                        ChangePriority(tickets)#O(N)
 
                     case 5:
-                        removed = DeleteTicket(tickets)
+                        removed = DeleteTicket(tickets)#O(NlgN)
 
                     case 6:
                         sorted_by_priority = merge_sort(tickets, 'priority')  #sort tickets by priority using merge sort
