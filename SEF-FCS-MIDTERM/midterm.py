@@ -1,6 +1,6 @@
 
 # In the following ticketing system , removed ID chosen by user is handled in  a way that the next ticket to be added after a deleted one will tkae the deleted id and dort the tickets by id
-
+# id in this poblem should be as follows tick then followed by number
 import datetime
 import verify_user as verify_user
 # -------------------------------------------------------Displaying Menus Section--------------------------------------------------------------------------------------------------------------#
