@@ -273,7 +273,7 @@ def HighestTicketsNum(tickets): # O(n^2) is the worst case since we have 2 neste
         if len(value) > highest:
             highest = len(value)
             highest_key = key
-    return f'Event {highest_key} has the highest number of tickets {highest}'
+    return f'\n\nEvent {highest_key} has the highest number of tickets {highest}'
 
 
 ########################## - Create Ticket - ###############################
@@ -310,7 +310,7 @@ def CreateTicket(removed, last_id, tickets, next_id_num, role):# O(NlgN) // sinc
         # O(NlgN)                                                    #calling sort_id nerge sort to sort tickets by IDs
         merge_sort(tickets, 'ticket_id')
         # appending the new id added to the tickets_id, discuused the use of this list before
-        print('Following ticket is added : ', ticket ,'priority = ' ,ticket['priority'])
+        print('Following ticket is added : ', ticket)
     else:  # the case where no deleted id is found
         # we take the last id found past from getlastid function and increment it by 1
         current_id_num = last_id + 1
