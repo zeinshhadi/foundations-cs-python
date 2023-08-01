@@ -102,7 +102,8 @@ def merge(left, right, option):
 
 
 def UploadTickets(tickets):  # TIME COMPLEXITY : O(N) // since open() returns a file object which is a pointer or Handle so no time complexity here only for the for loop inside
-
+    today_date = current_date()
+    today_date = str(today_date)
     # 1. With open is used to close the file after finishing from it. 2. file open as read since we used 'r'
     with open('events_data.txt', 'r') as file:
         for line in file:  # iterating through each line in file
@@ -112,7 +113,9 @@ def UploadTickets(tickets):  # TIME COMPLEXITY : O(N) // since open() returns a 
 
             if len(ticket_data) < 5:  # In case a line has less than than the data needed which is 5 in this case we ignore the line by using continue
                 continue
-            
+            if ticket_data[3]<today_date:
+                deleted_id.append(ticket_data[0])
+                del line
 
             ticket = {  # Storing our splitted data in a diciotnary according to each index of the data
                 'ticket_id': ticket_data[0],
