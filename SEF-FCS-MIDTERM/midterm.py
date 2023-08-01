@@ -116,16 +116,17 @@ def UploadTickets(tickets):  # TIME COMPLEXITY : O(N) // since open() returns a 
             if ticket_data[3]<today_date:  #if today date was bigger than date in the file we delete the line then add the deleted id ticket to deleted id list to reuse it next
                 deleted_id.append(ticket_data[0])
                 del line
+            else:    
 
-            ticket = {  # Storing our splitted data in a diciotnary according to each index of the data
-                'ticket_id': ticket_data[0],
-                'event_id': ticket_data[1],
-                'username': ticket_data[2],
-                'date': ticket_data[3],
-                'priority': int(ticket_data[4])
-            }
-            # adding the dictionaries to the list named tickets
-            tickets.append(ticket)
+                ticket = {  # Storing our splitted data in a diciotnary according to each index of the data
+                    'ticket_id': ticket_data[0],
+                    'event_id': ticket_data[1],
+                    'username': ticket_data[2],
+                    'date': ticket_data[3],
+                    'priority': int(ticket_data[4])
+                }
+                # adding the dictionaries to the list named tickets
+                tickets.append(ticket)
 
 
 
@@ -220,7 +221,7 @@ def event_date(): #O(N)
                 print("Invalid date format! Please enter the date in the format YYYY-MM-DD.")
 
             # Assure that the day, month, and year are within valid ranges
-            elif int(day) >= 1 and int(day) <= 31 and int(month) > 1 and int(month) <= 12 and int(year) >= 2023:  #we check for validity 
+            elif int(day) >= 1 and int(day) <= 31 and int(month) >= 1 and int(month) <= 12 and int(year) >= 2023:  #we check for validity 
                
                 date = date.replace('/', '')
                 date = int(date)
@@ -233,9 +234,9 @@ def event_date(): #O(N)
                        
             else:
                   
-                print("Invalid date format , check the hint to add a valid date")
+                print("Invalid date format , check the hint to add a valid date 1")
         else:
-            print("Invalid date format, check the hint to add a valid date ")
+            print("Invalid date format, check the hint to add a valid date 12")
             dateValidity = False
 
 
@@ -309,7 +310,7 @@ def CreateTicket(removed, last_id, tickets, next_id_num, role):# O(NlgN) // sinc
         # O(NlgN)                                                    #calling sort_id nerge sort to sort tickets by IDs
         merge_sort(tickets, 'ticket_id')
         # appending the new id added to the tickets_id, discuused the use of this list before
-        print('Following ticket is added : ', ticket)
+        print('Following ticket is added : ', ticket ,'priority = ' ,ticket['priority'])
     else:  # the case where no deleted id is found
         # we take the last id found past from getlastid function and increment it by 1
         current_id_num = last_id + 1
@@ -387,6 +388,7 @@ def ChangePriority(tickets):  # O(N) // 1 loop
                 'Enter the priority to update it : ')
             # setting the new priority when the id matches the user id input
             ticket['priority'] = desired_priority
+            print(f'this is tickets priority' , ticket['priority'])
             return print(ticket)
 
     else:
@@ -519,6 +521,7 @@ def main():#O(n^2) is the worst case when highest ticket is called
 
                     case 6:
                         sorted_by_priority = merge_sort(tickets, 'priority')  #sort tickets by priority using merge sort
+                        print(sorted_by_priority)
                         sorted_by_priority.reverse()  # reversing the ticket which will have the highest first since they have the bigger chance to attend event
                         tickets = RunEvents(sorted_by_priority, tickets)  # RunEvents the sorted by priority list and the lsit of ticket to remove events that run
 
