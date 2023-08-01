@@ -183,16 +183,14 @@ def current_date():#O(N)
 
 ######################### - Tomorrow date function - ########################
 # the following function is built to handle the next day events
-#i built to make sure that every end of year we will have a new year
-#this function takes today date as parameter and hold all possible values that would in the next day
-#since each date has max of 8 digits i used substring to split my date and converting this substring to integer using concatination
-#then incrementing what should increased to meet next day's date
-# finally i concatenate it back to string , and adding variables of strings together to for, a date 
+#by getting today's date then using the timedelta method from datetime library
+#we add 1 day to today's date and gets next day 
+#then the date is edited to be in the same sequence in the dates stored in the tickets list by removing dashes then we return this date
 
-def GetTomorrowDate():
+def GetTomorrowDate():#O(1)
     today = datetime.date.today()
-    tdelta = datetime.timedelta(days=1)
-    tomorrow_date = today + tdelta
+    tdelta = datetime.timedelta(days=1)   # timedelta is considered here is 1 day that can be added or decremented ot other usages
+    tomorrow_date = today + tdelta    # adding 1 day to today's date
     tomorrow_date = str(tomorrow_date)
     tomorrow_date=tomorrow_date.replace('-','')
     return tomorrow_date
@@ -367,7 +365,7 @@ def DisplayByDate(tickets):  # O(NlgN) since we have merge sort
 
     print('\nEvents of tomorrow\'s date :\n')
     
-    tomorrow_date = GetTomorrowDate()
+    tomorrow_date = GetTomorrowDate() # we call GetTomorrowDate funtcion and store value in a varibale to check for date
 
     for ticket in sorted_tickets:
        
