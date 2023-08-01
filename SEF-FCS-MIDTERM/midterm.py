@@ -113,7 +113,7 @@ def UploadTickets(tickets):  # TIME COMPLEXITY : O(N) // since open() returns a 
 
             if len(ticket_data) < 5:  # In case a line has less than than the data needed which is 5 in this case we ignore the line by using continue
                 continue
-            if ticket_data[3]<today_date:
+            if ticket_data[3]<today_date:  #if today date was bigger than date in the file we delete the line then add the deleted id ticket to deleted id list to reuse it next
                 deleted_id.append(ticket_data[0])
                 del line
 
