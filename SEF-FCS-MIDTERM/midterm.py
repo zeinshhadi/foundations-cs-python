@@ -539,7 +539,7 @@ def main():#O(n^2) is the worst case when highest ticket is called
             if choice >= 1 and choice <= 7:
                 match choice:
                     case 1:
-                        if len(deleted_id) == 0:
+
                             last_id = GetLastId(removed, tickets)
                             CreateTicket(removed, last_id,
                                          tickets, deleted_id, role)
