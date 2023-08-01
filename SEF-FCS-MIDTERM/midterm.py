@@ -9,7 +9,7 @@ import verify_user as verify_user
 
 def displayAdminMenu():
 
-    print("\n\nChoose from the following :\n1. Display Statistics\n2. Book a Ticket\n3. Dsiplay All Tickets\n4. Change Ticket's Priority\n5. Disable Ticket\n6. Run Events\n7. exit\n")
+    print("\n\nChoose from the following :\n1. Display Statistics\n2. Book a Ticket\n3. Display All Tickets\n4. Change Ticket's Priority\n5. Disable Ticket\n6. Run Events\n7. exit\n")
 ############################ - Display User to admin - #######################
 
 
@@ -74,24 +74,16 @@ def merge(left, right, option):
     merged_list = []
     left_index, right_index = 0, 0
 
-    while left_index < len(left) and right_index < len(right):
-        if option == 'ticket_id':
-            if left[left_index]["ticket_id"] < right[right_index]["ticket_id"]:        # herre we compare ids between left and right parts if oprion is ticket_id
-                merged_list.append(left[left_index])                                 #if left is smaller we append it to the merged list and we increment left by 1
-                left_index += 1
-            else:
-                merged_list.append(right[right_index])                                #else right id is appended to the merged list
-                right_index += 1                                                      #we increment then right by 1
+    while left_index < len(left) and right_index < len(right):                                             #we increment then right by 1
+      
+        left_side = left[left_index][option]                            # Any other option will do same but it cannot accpet a 'ticket_id' as an option to be passed 
+        right_side = right[right_index][option]                             # so i had to make it as if and else 
+        if left_side <= right_side:
+            merged_list.append(left[left_index])
+            left_index += 1
         else:
-            left_side = int(left[left_index][option])                                 # Any other option will do same but it cannot accpet a 'ticket_id' as an option to be passed 
-            right_side = int(right[right_index][option])                               # so i had to make it as if and else 
-
-            if left_side <= right_side:
-                merged_list.append(left[left_index])
-                left_index += 1
-            else:
-                merged_list.append(right[right_index])
-                right_index += 1
+            merged_list.append(right[right_index])
+            right_index += 1
 
     merged_list.extend(left[left_index:])
     merged_list.extend(right[right_index:])
