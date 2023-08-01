@@ -120,6 +120,8 @@ def UploadTickets(tickets):  # TIME COMPLEXITY : O(N) // since open() returns a 
 
             if len(ticket_data) < 5:  # In case a line has less than than the data needed which is 5 in this case we ignore the line by using continue
                 continue
+            
+
             ticket = {  # Storing our splitted data in a diciotnary according to each index of the data
                 'ticket_id': ticket_data[0],
                 'event_id': ticket_data[1],
@@ -129,6 +131,7 @@ def UploadTickets(tickets):  # TIME COMPLEXITY : O(N) // since open() returns a 
             }
             # adding the dictionaries to the list named tickets
             tickets.append(ticket)
+
 
 
 ########################## -  Get Last Id - ############################
@@ -171,6 +174,8 @@ def GetLastId(removed, tickets):  # O(N) // ALL of the function is using constan
 
 # the following function displays the current date 
 
+
+
 def current_date():#O(N)
     current_date = str(datetime.date.today())
     current_date = int(current_date.replace('-', ''))
@@ -179,71 +184,18 @@ def current_date():#O(N)
 ######################### - Tomorrow date function - ########################
 # the following function is built to handle the next day events
 #i built to make sure that every end of year we will have a new year
-#I should have used the datetime python library to make it mote clear but im already late to do it 
-#since i've done it before using auto adding date and i thought i would face no problem using an old code which did not happen
 #this function takes today date as parameter and hold all possible values that would in the next day
 #since each date has max of 8 digits i used substring to split my date and converting this substring to integer using concatination
 #then incrementing what should increased to meet next day's date
 # finally i concatenate it back to string , and adding variables of strings together to for, a date 
 
-def GetTomorrowDate(today_date):
-    # new year condition ex :2023-12-31
-    if today_date[4:6] == '12' and today_date[6:] == '31':
-        next_year = int(today_date[:4]) + 1
-        next_year = str(next_year)
-        first_day = '01'
-        first_month = '01'
-        today_date = next_year + first_month + first_day
-
-        return today_date
-    #  ex :2023-11-31,2023-10-31,2023-12-31
-    elif today_date[4:6] <= '12' and today_date[4:6] >= '09' and today_date[6:] == '31':
-      
-        next_day = '01'
-
-        next_month = int(today_date[4:6])+1
-        next_month = str(next_month)
-      
-
-        today_date = today_date[:4] + next_month + next_day
-
-        return today_date
-    #  ex :2023-01-31,2023-09-31,2023-08-31
-    elif today_date[4:6] < '09' and today_date[6:] == '31':
-       
-        next_month = int(today_date[4:6]) + 1
-        next_month = str(next_month)
-        next_day = '01'
-        today_date = today_date[:4] + '0' + next_month + next_day
-        return today_date
-    #  ex :2023-01-01,2023-08-02,2023-02-09
-    elif today_date[4:6] <= '09' and today_date[6:] < '10':
-       
-        next_month = today_date[6:]
-        # in case of 09 we make next month equals 10 directly to avoid having 010 instead
-        if next_month == '09':
-            next_month = '10'
-            today_date = today_date[:6] + next_month
-        #else we increment the number ( 08+1=9 ) so we add a '0' to the left string 08   
-        else:
-            next_month = int(today_date[6:]) + 1
-            next_month = '0'+str(next_month)
-            today_date = today_date[:6] + next_month
-        return today_date
-     #  ex :2023-11-11,2023-08-22,2023-02-19
-    elif today_date[6:] >= '10' and today_date[6:] < '31':
-      
-        next_day = int(today_date[6:]) + 1
-        next_day = str(next_day)
-        today_date = today_date = today_date[:6] + next_day
-        return today_date
-     #  ex :2023-01-01,2023-08-02,2023-02-09 we add a 0 to left string 
-    elif today_date[6:] < '10':
-
-        next_day = int(today_date[6:]) + 1
-        next_day = '0' + str(next_day)
-        today_date = today_date = today_date[:6] + next_day
-        return today_date
+def GetTomorrowDate():
+    today = datetime.date.today()
+    tdelta = datetime.timedelta(days=1)
+    tomorrow_date = today + tdelta
+    tomorrow_date = str(tomorrow_date)
+    tomorrow_date=tomorrow_date.replace('-','')
+    return tomorrow_date
 
 
 
@@ -253,16 +205,14 @@ def GetTomorrowDate(today_date):
 
 def event_date(): #O(N)
     today_date = current_date()
-    tomorrow_date = GetTomorrowDate(str(today_date))
+
     dateValidity = False
 
 
     date = ''
     while (dateValidity != True):
         date = input('Enter a EVENT DATE formatted as YYYY-MM-DD and starting today\'s date , example (2023-09-08) must conatin 8 digits : ').strip()
-        date_test = date.replace('-','')
-        if tomorrow_date == date_test:
-            return tomorrow_date
+
         frontSlashCount = date.count('/')
         dashCount = date.count('-')
         if (frontSlashCount == 2 or dashCount== 2):  # Check if user entered complete date with 2 slashes or 2 dashes
@@ -273,12 +223,11 @@ def event_date(): #O(N)
                 '/'
             )  # split the date to check if the value of day , month and year are valid and sotre each value to its corresponding variables respectively
             
-            if not (day.isdigit() and month.isdigit()
-                    and year.isdigit()):  # Assure that the user entered only digits
-                print("Invalid date format! Please enter the date in the format DD-MM-YYYY.")
+            if not (day.isdigit() and month.isdigit() and year.isdigit()):  # Assure that the user entered only digits
+                print("Invalid date format! Please enter the date in the format YYYY-MM-DD.")
 
             # Assure that the day, month, and year are within valid ranges
-            elif int(day) > 1 and int(day) <= 31 and int(month) > 1 and int(month) <= 12 and int(year) >= 2023:  #we check for validity 
+            elif int(day) >= 1 and int(day) <= 31 and int(month) > 1 and int(month) <= 12 and int(year) >= 2023:  #we check for validity 
                
                 date = date.replace('/', '')
                 date = int(date)
@@ -288,12 +237,10 @@ def event_date(): #O(N)
                 else:
                    
                     return date
-            
-            
-            
+                       
             else:
                   
-                print("Invalid date format , check the hint to add a valid date ")
+                print("Invalid date format , check the hint to add a valid date")
         else:
             print("Invalid date format, check the hint to add a valid date ")
             dateValidity = False
@@ -356,6 +303,7 @@ def CreateTicket(removed, last_id, tickets, next_id_num, role):# O(NlgN) // sinc
         event_id = input('Enter the event ID with deleted before id: ')
         username = input('Enter your name : ')
         event_date_added=str(event_date())
+
         priority = 0
         ticket = {  # data added above will be stored in a ticket dictionary that will be appended after to list tickets
             'ticket_id': ticket_id,
@@ -377,6 +325,7 @@ def CreateTicket(removed, last_id, tickets, next_id_num, role):# O(NlgN) // sinc
         event_id = input('Enter the event ID for new id ticket: ')
         username = input('Enter your name : ')
         event_date_added=str(event_date())
+
         priority = 0
         ticket = {
             'ticket_id': ticket_id,
@@ -416,9 +365,12 @@ def DisplayByDate(tickets):  # O(NlgN) since we have merge sort
                 # before printing it
                 print(ticket)
 
-    tomorrow_date = GetTomorrowDate(current_date)
     print('\nEvents of tomorrow\'s date :\n')
+    
+    tomorrow_date = GetTomorrowDate()
+
     for ticket in sorted_tickets:
+       
         if ticket['date'] == str(tomorrow_date):
             print(ticket)
     print('\nUpcoming Events :\n')
@@ -504,22 +456,22 @@ def main():#O(n^2) is the worst case when highest ticket is called
     choice = 0
     print('\n\nWelcome to our Events ticketing system !\nplease enter your username and password to enter as an admin,\nelse just proceed with an empty values if user :')
     #checking for user attempts and role
-    while attempts > 0:
-        username = input('\n\nEnter your admin username : ')
-        password = input(
-            '\n\nEnter your username\'s password to proceed as admin : ')
+    # while attempts > 0:
+    #     username = input('\n\nEnter your admin username : ')
+    #     password = input(
+    #         '\n\nEnter your username\'s password to proceed as admin : ')
 
-        admin = verify_user.VerifyLogin(username, password, 'users.txt')
-        if username == 'admin' and admin == True:
-            attempts = 0
-        elif username == 'admin' and admin == False:
-            print(
-                f'Enter a valid username and password , you have {attempts} remaining')
-            attempts -= 1
-        else:
-            attempts = 0
-            admin = False
-
+    #     admin = verify_user.VerifyLogin(username, password, 'users.txt')
+    #     if username == 'admin' and admin == True:
+    #         attempts = 0
+    #     elif username == 'admin' and admin == False:
+    #         print(
+    #             f'Enter a valid username and password , you have {attempts} remaining')
+    #         attempts -= 1
+    #     else:
+    #         attempts = 0
+    #         admin = False
+    admin=True
     if admin == True:
 
         print('Signed in as Admin')
