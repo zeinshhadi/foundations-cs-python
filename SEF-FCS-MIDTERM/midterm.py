@@ -540,9 +540,31 @@ def main():#O(n^2) is the worst case when highest ticket is called
                 match choice:
                     case 1:
 
-                            last_id = GetLastId(removed, tickets)
+                        #in this case if we don't found a delegted id before added to deleted_id list we enter the id 
+                        # and book a ticket that will increment the last id we have in list, in this case removed is False
+                        if len(deleted_id) == 0:     
+                            # we get the last id in tickets list and store in last_id using function 
+                            last_id = GetLastId(removed, tickets) #O(N)  
+                            
+
                             CreateTicket(removed, last_id,
-                                         tickets, deleted_id, role)
+                                         tickets, deleted_id, role) #O(NlgN)    #we create then by sending the following parameters 
+                        # if removed is true then we the deleted_id to get the last id and user 
+                        #if role is admin we exir without saving else if user we save
+
+                        else:
+                            #case where we have a deleted id , we sort the deleted_id list to keep the sequence 
+                            #removed is set True to enter the id condition in the create Ticket  
+                            deleted_id.sort()  # O(NlgN)
+                            removed = True
+                            temp = None                     #this temp is to send it to parameter instead of last_id since we didn't inialize it at this state
+                            next_id_num = GetLastId(removed, tickets) #since removed is true so the GetLastId will be the lowest id found in deleted id list 
+
+                            print('this is next id num : ', next_id_num)
+                            CreateTicket(removed, temp, tickets,next_id_num, role)
+                            removed = False #after finising removed set back to False to avoid mistakes
+                            tickets = merge_sort(tickets, 'ticket_id') #sotirng tickets by id using merge sort 
+
             else:
                 print('\n Choice should be between 1 and 2 ')
 
